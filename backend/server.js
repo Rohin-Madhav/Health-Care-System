@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const healthCareRoutes = require("./routes/healthCareRoutes")
 
+
 const app = express();
 
 connectDB();
@@ -16,7 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/api/user",healthCareRoutes)
+app.use("/api/",healthCareRoutes)
+app.use("/api/users",require("./routes/roleRoutes"))
 
 app.listen(PORT, () => {
   console.log(`Server is running in : ${PORT} `);
