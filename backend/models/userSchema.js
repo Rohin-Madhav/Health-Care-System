@@ -23,6 +23,10 @@ const userSchema = new Schema({
     enum: ["patient", "doctor", "admin"],
     default: "patient",
   },
+  doctor: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -2,7 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const User = require("../models/userSchema");
 
-const protect = async (req, res, next) => {
+const userAuth = async (req, res, next) => {
   let token;
   if (
     req.headers.authorization &&
@@ -22,4 +22,4 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = protect;
+module.exports = userAuth;
