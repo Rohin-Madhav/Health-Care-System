@@ -23,9 +23,12 @@ const userSchema = new Schema({
     enum: ["patient", "doctor", "admin"],
     default: "patient",
   },
-  doctor: {
+   isApproved: {
     type: Boolean,
-    default: false,
+    default: function () {
+      
+      return this.role === "doctor" ? false : true;
+    },
   },
   createdAt: {
     type: Date,
