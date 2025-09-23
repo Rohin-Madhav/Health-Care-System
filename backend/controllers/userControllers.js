@@ -1,5 +1,6 @@
 const User = require("../models/userSchema");
-const Appointment = require("../models/appointmentSchema");
+const Appointment = require("../models/appointment");
+const MedicalRecord = require("../models/medicaleRecord"); 
 
 exports.approveDoctor = async (req, res) => {
   try {
@@ -34,8 +35,8 @@ exports.addDoctor = async (req, res) => {
       username,
       email,
       password,
-      role: "doctor",   
-      isApproved: false, 
+      role: "doctor",
+      isApproved: false,
     });
     await user.save();
     res.status(201).json({
@@ -212,5 +213,67 @@ exports.deleteAppointment = async (req, res) => {
     res.status(200).json({ message: "Appointment deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.createMedicalRecord = async (req, res) => {
+  const { patient, diagnosis, treatment, doctor, notes } = req.body;
+
+  if (!patient || !diagnosis || !treatment || !doctor) {
+    return res.status(400).json({ message: "Please fill all required fields" });
+  }
+
+  const medicalRecord = await MedicalRecord.create({
+    patient,
+    diagnosis,
+    treatment,
+    doctor,
+    notes,
+  });
+
+  res.status(201).json(medicalRecord);
+};
+
+
+exports.getMedicalRecordsByPatient = async (req, res) => {
+  try {
+    const role = req.user.role;
+    const userId = req.user._id.toString();
+    const { patientId } = req.params;
+
+    let filter = {};
+
+    if (patientId) {
+      if (role === "patient" && userId !== patientId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      if (role === "doctor") {
+        filter = { patient: patientId, doctor: userId };
+      } else if (role === "admin") {
+        filter = { patient: patientId };
+      } else if (role === "patient") {
+        filter = { patient: patientId };
+      } else {
+        return res.status(403).json({ message: "Unauthorized role" });
+      }
+    } else {
+      if (role === "admin") {
+        filter = {};
+      } else if (role === "doctor") {
+        filter = { doctor: userId }; 
+      } else if (role === "patient") {
+        filter = { patient: userId }; 
+      } else {
+        return res.status(403).json({ message: "Unauthorized role" });
+      }
+    }
+
+    const records = await MedicalRecord.find(filter)
+      .populate("patient", "username email")
+      .populate("doctor", "username email");
+
+    return res.status(200).json(records);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
