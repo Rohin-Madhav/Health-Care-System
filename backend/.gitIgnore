@@ -27,3 +27,6 @@ build/
 # Misc
 *.bak
 *.tmp
+
+# Uploads
+uploads/

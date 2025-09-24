@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const medicalRecord = new mongoose.Schema(
+const medicalRecordSchema = new mongoose.Schema(
   {
     patient: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "User", 
+      ref: "User",
     },
     date: {
       type: Date,
@@ -22,9 +22,17 @@ const medicalRecord = new mongoose.Schema(
       required: [true, "Please add a treatment plan"],
     },
     doctor: {
-     type: Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
+    },
+    fileName: {
+      type: String,
+      required: true,
+    },
+    filePath: {
+      type: String,
+      required: true,
     },
     notes: {
       type: String,
@@ -34,4 +42,4 @@ const medicalRecord = new mongoose.Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("MedicalRecord", medicalRecord);
+module.exports = mongoose.model("MedicalRecord", medicalRecordSchema);
