@@ -1,6 +1,5 @@
-const express = require("express");
+const router = require("express").Router();
 const multer = require("multer");
-const router = express.Router();
 const userAuth = require("../middileware/authMiddilware");
 const authorizeRoles = require("../middileware/roleMiddilware");
 const fs = require("fs");
