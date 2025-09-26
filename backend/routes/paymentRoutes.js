@@ -1,12 +1,26 @@
-const router = require('express').Router()
+const router = require("express").Router();
 const userAuth = require("../middileware/authMiddilware");
 const authorizeRoles = require("../middileware/roleMiddilware");
 const paymentControllers = require("../controllers/paymentControllers");
 
+router.post(
+  "/create",
+  userAuth,
+  authorizeRoles("patient"),
+  paymentControllers.createPayment
+);
+router.post("/success", paymentControllers.paymentSuccess);
+router.get(
+  "/my",
+  userAuth,
+  authorizeRoles("patient"),
+  paymentControllers.getMyPayments
+);
+router.get(
+  "/all",
+  userAuth,
+  authorizeRoles("admin"),
+  paymentControllers.getAllPayments
+);
 
-router.post('/pay',userAuth,authorizeRoles("patient"),paymentControllers.createPayment)
-
-
-
-
-module.exports = router
+module.exports = router;
