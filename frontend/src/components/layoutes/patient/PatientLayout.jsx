@@ -1,9 +1,9 @@
 import React from 'react'
+import Navbar from '../../Navbar'
 import { Outlet } from 'react-router-dom'
-import Navbar from '../Navbar'
-import Footer from '../Footer'
+import Footer from '../../Footer'
 
-function DoctorLayout() {
+function PatientLayout() {
   return (
     <div>
       <Navbar />
@@ -13,4 +13,4 @@ function DoctorLayout() {
   )
 }
 
-export default DoctorLayout
+export default PatientLayout

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function PatientDashboard() {
+function StaffLogin() {
   return (
     <div>
       
@@ -8,4 +8,5 @@ function PatientDashboard() {
   )
 }
 
-export default PatientDashboard
+export default StaffLogin
+

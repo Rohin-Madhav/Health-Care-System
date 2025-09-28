@@ -1,6 +1,7 @@
 import React from 'react'
 
-function Admin() {
+function AdminDashboard() {
+  
   return (
     <div>
       <h1>Admin Dashboard</h1>
@@ -8,4 +9,4 @@ function Admin() {
   )
 }
 
-export default Admin
+export default AdminDashboard

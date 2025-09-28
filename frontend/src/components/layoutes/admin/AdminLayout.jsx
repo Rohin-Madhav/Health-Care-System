@@ -1,17 +1,20 @@
 import React from "react";
+import Navbar from "../../Navbar";
+import Footer from "../../Footer";
 import { Outlet } from "react-router-dom";
-import Navbar from "../Navbar";
-import Footer from "../Footer";
 
-function AdminLayout() {
+function adminLayout() {
+ 
   return (
+    
     <div>
-        Admin
       <Navbar />
+    <h1> Admin</h1>
+
       <Outlet />
       <Footer />
     </div>
   );
 }
 
-export default AdminLayout;
+export default adminLayout;
