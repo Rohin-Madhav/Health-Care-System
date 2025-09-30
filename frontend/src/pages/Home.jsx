@@ -10,9 +10,10 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const features = [
     {
@@ -45,85 +46,7 @@ function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <Heart className="w-8 h-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">
-                HealthCare
-              </span>
-            </div>
-
-            <div className="hidden md:flex items-center space-x-8">
-              <a
-                href="#services"
-                className="text-gray-700 hover:text-blue-600 transition"
-              >
-                Services
-              </a>
-              <a
-                href="#about"
-                className="text-gray-700 hover:text-blue-600 transition"
-              >
-                About
-              </a>
-              <a
-                href="#contact"
-                className="text-gray-700 hover:text-blue-600 transition"
-              >
-                Contact
-              </a>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition">
-                Sign In
-              </button>
-            </div>
-
-            <button
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t">
-            <div className="px-4 py-4 space-y-3">
-              <a
-                href="#services"
-                className="block text-gray-700 hover:text-blue-600"
-              >
-                Services
-              </a>
-              <a
-                href="#about"
-                className="block text-gray-700 hover:text-blue-600"
-              >
-                About
-              </a>
-              <a
-                href="#contact"
-                className="block text-gray-700 hover:text-blue-600"
-              >
-                Contact
-              </a>
-              <button className="w-full bg-blue-600 text-white px-6 py-2 rounded-full">
-                Sign In
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
-
+    <div>
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -221,71 +144,21 @@ function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center text-white">
           <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-xl mb-8 opacity-90">
             Join thousands of patients who trust us with their health
           </p>
-          <button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold transition transform hover:scale-105">
+          <button
+            type="button"
+            onClick={() => navigate("/register")}
+            className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold transition transform hover:scale-105"
+          >
             Create Account
           </button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Heart className="w-6 h-6" />
-                <span className="text-xl font-bold">HealthCare</span>
-              </div>
-              <p className="text-gray-400">Your trusted healthcare partner</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <div className="space-y-2 text-gray-400">
-                <p className="hover:text-white cursor-pointer transition">
-                  About Us
-                </p>
-                <p className="hover:text-white cursor-pointer transition">
-                  Services
-                </p>
-                <p className="hover:text-white cursor-pointer transition">
-                  Doctors
-                </p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <div className="space-y-2 text-gray-400">
-                <p className="hover:text-white cursor-pointer transition">
-                  Help Center
-                </p>
-                <p className="hover:text-white cursor-pointer transition">
-                  Privacy Policy
-                </p>
-                <p className="hover:text-white cursor-pointer transition">
-                  Terms of Service
-                </p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
-              <div className="space-y-2 text-gray-400">
-                <p>support@healthcare.com</p>
-                <p>1-800-HEALTH</p>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 HealthCare. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
