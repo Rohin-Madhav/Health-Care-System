@@ -13,6 +13,7 @@ import PatientLogin from "./pages/PatientLogin";
 import StaffLogin from "./pages/StaffLogin";
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientLayout from "./components/layoutes/patient/PatientLayout";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -21,10 +22,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
           </Route>
-          
+
           <Route path="/admin" element={<AdminLayout />}>
-            <Route path="admin-dashboard" element={<AdminDashboard/>} />
+            <Route path="admin-dashboard" element={<AdminDashboard />} />
             <Route path="addDoctor" element={<AddDoctor />} />
             <Route path="patientDetails" element={<GetAllPatients />} />
           </Route>
@@ -35,8 +37,6 @@ function App() {
           </Route>
           <Route path="/patient" element={<PatientLayout />}>
             <Route path="patient-dashboard" element={<PatientDashboard />} />
-            {/* <Route path="addDoctor" element={<AddDoctor />} />
-            <Route path="patientDetails" element={<GetAllPatients />} /> */}
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/patientLogin" element={<PatientLogin />} />

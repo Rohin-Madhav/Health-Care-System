@@ -28,7 +28,7 @@ function PatientLogin() {
         // adjust checks based on your API shape
         if (response.status === 200 && response.data?.success !== false) {
           alert("Login successful!");
-          navigate("/patient-dashboard")
+          navigate("/patient/patient-dashboard")
         } else {
           setErrorMessage(
             response.data?.message || "Invalid email or password."

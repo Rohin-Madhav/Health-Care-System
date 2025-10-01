@@ -16,16 +16,21 @@ function StaffLogin() {
       const res = await api.post("/auth/login", { email, password, role });
       const data = res.data;
 
+      console.log("Login response:", data); // ✅ debug backend response
+
       if (data?.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.role);
       }
-      if (data?.role === "admin") {
+
+      const roleNormalized = data?.role?.toLowerCase?.();
+
+      if (roleNormalized === "admin") {
         navigate("/admin/admin-dashboard");
-      } else if (data?.role === "doctor") {
+      } else if (roleNormalized === "doctor") {
         navigate("/doctor/doctor-dashboard");
       } else {
-        setError("Invalid role selected.");
+        setError(`Invalid role selected. Got: ${data?.role}`);
       }
     } catch (err) {
       const msg =
@@ -66,6 +71,7 @@ function StaffLogin() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -85,6 +91,7 @@ function StaffLogin() {
             />
           </div>
 
+          {/* Password */}
           <div>
             <div className="flex items-center justify-between mb-1">
               <label
@@ -112,6 +119,7 @@ function StaffLogin() {
             />
           </div>
 
+          {/* Role */}
           <div>
             <label
               htmlFor="role"
@@ -124,6 +132,7 @@ function StaffLogin() {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               aria-label="Select role"
+              required
               className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-200 focus:border-transparent outline-none transition bg-white cursor-pointer"
             >
               <option value="" disabled>
@@ -137,6 +146,7 @@ function StaffLogin() {
             </p>
           </div>
 
+          {/* Remember Me + Patient Login */}
           <div className="flex items-center justify-between">
             <label className="inline-flex items-center text-sm text-gray-600">
               <input
@@ -153,6 +163,7 @@ function StaffLogin() {
             </Link>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-150 ease-in-out transform hover:scale-[1.02] active:scale-95"
@@ -160,6 +171,7 @@ function StaffLogin() {
             Sign in
           </button>
 
+          {/* Error message */}
           {error && (
             <div
               role="alert"
