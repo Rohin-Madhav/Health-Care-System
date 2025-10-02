@@ -33,7 +33,7 @@ const Navbar = () => {
                 About
               </Link>
               <Link
-                to="/doctors"
+                to="/contact"
                 className="text-gray-700 hover:text-blue-600 transition"
               >
                 Contact
@@ -70,18 +70,16 @@ const Navbar = () => {
               >
                 Services
               </a>
-              <a
-                href="#about"
-                className="block text-gray-700 hover:text-blue-600"
-              >
-                About
-              </a>
-              <a
-                href="#contact"
-                className="block text-gray-700 hover:text-blue-600"
-              >
-                Contact
-              </a>
+          <Link to="/about">
+            <span className="block text-gray-700 hover:text-blue-600">
+              About
+            </span>
+          </Link>
+             <Link to="/contact">
+               <span className="block text-gray-700 hover:text-blue-600">
+                 Contact
+               </span>
+             </Link>
               <button className="w-full bg-blue-600 text-white px-6 py-2 rounded-full">
                 Sign In
               </button>
