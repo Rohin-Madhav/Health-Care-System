@@ -25,6 +25,12 @@ router.delete(
 );
 
 //#region doctor,admin
+router.get(
+  "/patient/:id",
+  userAuth,
+  authorizeRoles("admin", "doctor", "patient"),
+  userControllers.getPatientById
+);
 router.patch(
   "/doctor/:id",
   userAuth,
@@ -46,7 +52,7 @@ router.get(
 router.get(
   "/appointments/:id",
   userAuth,
-  authorizeRoles("admin", "doctor"),
+  authorizeRoles("admin", "doctor", "patient"),
   userControllers.getAppointmentById
 );
 router.post(
@@ -69,9 +75,6 @@ router.delete(
 );
 
 //#region patient,admin
-router.get("/patient", userAuth, authorizeRoles("patient"), (req, res) => {
-  res.json({ message: "Welcome Patient!" });
-});
 router.get(
   "/doctors",
   userAuth,

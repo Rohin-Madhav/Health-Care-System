@@ -20,6 +20,10 @@ const paymentSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  count: {
+    type: Number,
+    required: true,
+  },
   status: {
     type: String,
     enum: ["pending", "success", "failed"],

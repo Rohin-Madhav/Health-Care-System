@@ -1,6 +1,7 @@
 const User = require("../models/userSchema");
 const Appointment = require("../models/appointment");
-const MedicalRecord = require("../models/medicaleRecord"); 
+const MedicalRecord = require("../models/medicaleRecord");
+const Payment = require("../models/payment");
 
 exports.approveDoctor = async (req, res) => {
   try {
@@ -122,6 +123,19 @@ exports.getPatients = async (req, res) => {
   }
 };
 
+exports.getPatientById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("-password");
+    if (!user || user.role !== "patient") {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.updatePatient = async (req, res) => {
   try {
     const { id } = req.params;
@@ -178,13 +192,15 @@ exports.getAllAppointments = async (req, res) => {
 };
 
 exports.getAppointmentById = async (req, res) => {
-  try {
-    const appointment = await Appointment.findById(req.params.id);
-    if (!appointment)
-      return res.status(404).json({ message: "Appointment not found" });
-    res.status(200).json(appointment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+ try {
+    const appointments = await Appointment.find({ patient: req.params.patientId })
+      .populate("doctor", "username specialty")
+      .sort({ date: 1 });
+
+    res.json(appointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching appointments" });
   }
 };
 
@@ -234,7 +250,6 @@ exports.createMedicalRecord = async (req, res) => {
   res.status(201).json(medicalRecord);
 };
 
-
 exports.getMedicalRecordsByPatient = async (req, res) => {
   try {
     const role = req.user.role;
@@ -260,9 +275,9 @@ exports.getMedicalRecordsByPatient = async (req, res) => {
       if (role === "admin") {
         filter = {};
       } else if (role === "doctor") {
-        filter = { doctor: userId }; 
+        filter = { doctor: userId };
       } else if (role === "patient") {
-        filter = { patient: userId }; 
+        filter = { patient: userId };
       } else {
         return res.status(403).json({ message: "Unauthorized role" });
       }
@@ -275,5 +290,74 @@ exports.getMedicalRecordsByPatient = async (req, res) => {
     return res.status(200).json(records);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPatientDashboardData = async (req, res) => {
+  try {
+    const patientId = req.user._id;
+
+    // 1. Get user info
+    const user = await User.findById(patientId).select("username");
+
+    // 2. Get upcoming appointment
+    const upcomingAppointment = await Appointment.findOne({
+      patientId: patientId,
+      date: { $gte: new Date() },
+      status: "scheduled",
+    })
+      .sort({ date: 1 })
+      .populate("doctorId", "username specialty");
+
+    // 3. Get pending payments
+    const pendingPayments = await Payment.find({
+      patientId: patientId,
+      status: "pending",
+    });
+
+    const totalPendingAmount = pendingPayments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    );
+
+    const dashboardData = {
+      username: user.username,
+      upcomingAppointment: upcomingAppointment
+        ? {
+            date: upcomingAppointment.date.toDateString(),
+            time: upcomingAppointment.time,
+            doctor: upcomingAppointment.doctorId.username,
+            specialty: upcomingAppointment.doctorId.specialty || "General",
+          }
+        : null,
+      pendingPayments: {
+        amount: totalPendingAmount,
+        count: pendingPayments.length,
+      },
+    };
+
+    res.status(200).json(dashboardData);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching dashboard data", error: error.message });
+  }
+};
+
+exports.handleContactForm = async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    // Basic validation
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    // For now, we'll just log the submission to the console.
+    // In a real application, you would send an email or save it to a database.
+    console.log("New Contact Form Submission:");
+    console.log({ name, email, subject, message });
+
+    res.status(200).json({ message: "Message received successfully!" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error, please try again later." });
   }
 };

@@ -1,20 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
+import api from "../../services/Api";
 
- function PatientDashboard() {
-  const [patientData, setPatientData] = useState({
-    name: "Sarah Johnson",
-    upcomingAppointment: {
-      date: "Oct 5, 2025",
-      time: "10:30 AM",
-      doctor: "Dr. Michael Chen",
-      specialty: "Cardiology",
-    },
-    pendingPayments: {
-      count: 2,
-      amount: 450.0,
-    },
-  });
+export default function PatientDashboard() {
+  const [patientData, setPatientData] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        if (!userId) {
+          setError("No patient ID found. Please log in again.");
+          setLoading(false);
+          return;
+        }
+
+        const [userRes, apptRes, payRes] = await Promise.all([
+          api.get(`/users/patient/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          api.get(`/users/appointments/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          api.get(`/payment/my/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        setPatientData(userRes.data);
+        setAppointments(apptRes.data);
+        setPayments(payRes.data);
+      } catch (error) {
+        console.error(error);
+        setError("Error fetching patient data or appointments");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) return <p>Loading dashboard...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
+
+  // Find the next upcoming appointment
+  const upcomingAppointment = appointments.find(
+    (a) => new Date(a.date) > new Date() && a.status !== "cancelled"
+  );
+
+  // Filter pending payments
+  const pendingPayments = payments.filter((p) => p.status === "pending");
+  const totalPendingAmount = pendingPayments.reduce(
+    (sum, p) => sum + (p.amount || 0),
+    0
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
@@ -22,7 +68,7 @@ import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Welcome back, {patientData.name}! 👋
+            Welcome back, {patientData?.username || "Patient"}! 👋
           </h1>
           <p className="text-gray-600">Here's your health dashboard overview</p>
         </div>
@@ -41,22 +87,27 @@ import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
                 </h3>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center text-gray-700">
-                <Clock className="w-4 h-4 mr-2 text-gray-500" />
-                <span className="font-medium">
-                  {patientData.upcomingAppointment.date}
-                </span>
-                <span className="mx-2">•</span>
-                <span>{patientData.upcomingAppointment.time}</span>
+
+            {upcomingAppointment ? (
+              <div className="space-y-2">
+                <div className="flex items-center text-gray-700">
+                  <Clock className="w-4 h-4 mr-2 text-gray-500" />
+                  <span className="font-medium">
+                    {new Date(upcomingAppointment.date).toLocaleDateString()}
+                  </span>
+                  <span className="mx-2">•</span>
+                  <span>{upcomingAppointment.time}</span>
+                </div>
+                <p className="text-gray-600">
+                  {upcomingAppointment.doctor?.username || "Unknown Doctor"}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {upcomingAppointment.service}
+                </p>
               </div>
-              <p className="text-gray-600">
-                {patientData.upcomingAppointment.doctor}
-              </p>
-              <p className="text-sm text-gray-500">
-                {patientData.upcomingAppointment.specialty}
-              </p>
-            </div>
+            ) : (
+              <p className="text-gray-600">No upcoming appointments.</p>
+            )}
           </div>
 
           {/* Pending Payments Card */}
@@ -75,12 +126,12 @@ import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
               <div className="flex items-center">
                 <AlertCircle className="w-4 h-4 mr-2 text-orange-500" />
                 <span className="text-2xl font-bold text-gray-800">
-                  ${patientData.pendingPayments.amount.toFixed(2)}
+                  ${totalPendingAmount.toFixed(2)}
                 </span>
               </div>
               <p className="text-gray-600">
-                {patientData.pendingPayments.count} outstanding invoice
-                {patientData.pendingPayments.count !== 1 ? "s" : ""}
+                {pendingPayments.length} outstanding invoice
+                {pendingPayments.length !== 1 ? "s" : ""}
               </p>
             </div>
           </div>
@@ -107,7 +158,7 @@ import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
               View My Payments
             </button>
 
-            {patientData.pendingPayments.count > 0 && (
+            {pendingPayments.length > 0 && (
               <button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 animate-pulse">
                 <DollarSign className="w-5 h-5 mx-auto mb-2" />
                 Make Payment
@@ -119,5 +170,3 @@ import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
     </div>
   );
 }
-
-export default PatientDashboard;

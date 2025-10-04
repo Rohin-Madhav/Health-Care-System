@@ -14,9 +14,9 @@ const Navbar = () => {
             <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <Heart className="w-8 h-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">
+              <Link to="/" className="text-2xl font-bold text-gray-900">
                 HealthCare
-              </span>
+              </Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">

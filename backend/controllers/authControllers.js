@@ -27,20 +27,35 @@ exports.registerUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     const user = await User.findOne({ email });
     if (!user || !(await user.matchPassword(password))) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
+    // Check if the role provided in the request matches the user's role in the database
+    if (role && user.role !== role) {
+      return res.status(403).json({ message: "Role mismatch. Please log in with the correct role." });
+    }
+
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    res.status(200).json({token});
+    res.status(200).json({
+     token,
+  user: {
+    id: user._id,
+    username: user.username,
+    role: user.role,
+    },
+  });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 
 
 

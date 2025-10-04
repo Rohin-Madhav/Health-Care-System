@@ -16,21 +16,21 @@ function StaffLogin() {
       const res = await api.post("/auth/login", { email, password, role });
       const data = res.data;
 
-      console.log("Login response:", data); // ✅ debug backend response
+      console.log("Login response:", data);
 
       if (data?.token) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
+        localStorage.setItem("role", data.user.role);
       }
 
-      const roleNormalized = data?.role?.toLowerCase?.();
+      const roleNormalized = data?.user?.role?.toLowerCase?.();
 
       if (roleNormalized === "admin") {
         navigate("/admin/admin-dashboard");
       } else if (roleNormalized === "doctor") {
         navigate("/doctor/doctor-dashboard");
       } else {
-        setError(`Invalid role selected. Got: ${data?.role}`);
+        setError(`Invalid role selected. Got: ${data?.user?.role}`);
       }
     } catch (err) {
       const msg =

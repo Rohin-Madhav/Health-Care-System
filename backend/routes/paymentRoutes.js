@@ -11,7 +11,7 @@ router.post(
 );
 router.post("/success", paymentControllers.paymentSuccess);
 router.get(
-  "/my",
+  "/my/:id",
   userAuth,
   authorizeRoles("patient"),
   paymentControllers.getMyPayments
