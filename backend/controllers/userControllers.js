@@ -2,6 +2,7 @@ const User = require("../models/userSchema");
 const Appointment = require("../models/appointment");
 const MedicalRecord = require("../models/medicaleRecord");
 const Payment = require("../models/payment");
+const Contact = require("../models/contact");
 
 exports.approveDoctor = async (req, res) => {
   try {
@@ -174,17 +175,48 @@ exports.updatePatient = async (req, res) => {
 
 exports.createAppointment = async (req, res) => {
   try {
-    const newAppointment = new Appointment(req.body);
-    await newAppointment.save();
-    res.status(201).json(newAppointment);
+    const patientId = req.user._id;
+    const { doctorId, date, time, clientName, reason } = req.body;
+
+    try {
+      const newAppointment = new Appointment({
+        doctorId: doctorId,
+        patientId: patientId,
+        date,
+        time,
+        clientName,
+        reason,
+        
+      });
+      await newAppointment.save();
+      res.status(201).json(newAppointment);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
 exports.getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find();
+    const role = req.user.role;
+    const userId = req.user._id;
+    let filter = {};
+
+    if (role === "doctor") {
+      filter = { doctor: userId };
+    } else if (role === "admin") {
+      filter = {};
+    } else {
+      return res.status(403).json({ message: "Unauthorized role" });
+    }
+
+    const appointments = await Appointment.find(filter)
+      .populate("doctor", "username email")
+      .populate("patient", "username email")
+      .sort({ date: 1 });
+
     res.status(200).json(appointments);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -192,14 +224,21 @@ exports.getAllAppointments = async (req, res) => {
 };
 
 exports.getAppointmentById = async (req, res) => {
- try {
-    const appointments = await Appointment.find({ patient: req.params.patientId })
-      .populate("doctor", "username specialty")
+  try {
+    const { patientId } = req.params;
+
+    if (!patientId) {
+      return res.status(400).json({ message: "Invalid patient ID" });
+    }
+
+    
+    const appointments = await Appointment.find({ patientId })
+      .populate("doctorId", "username specialty") // your model uses doctorId
       .sort({ date: 1 });
 
     res.json(appointments);
   } catch (err) {
-    console.error(err);
+    console.error("Error fetching appointments:", err);
     res.status(500).json({ message: "Error fetching appointments" });
   }
 };
@@ -338,26 +377,36 @@ exports.getPatientDashboardData = async (req, res) => {
 
     res.status(200).json(dashboardData);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching dashboard data", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching dashboard data", error: error.message });
   }
 };
 
 exports.handleContactForm = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
-
-    // Basic validation
-    if (!name || !email || !subject || !message) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
-
-    // For now, we'll just log the submission to the console.
-    // In a real application, you would send an email or save it to a database.
-    console.log("New Contact Form Submission:");
-    console.log({ name, email, subject, message });
-
-    res.status(200).json({ message: "Message received successfully!" });
+    const newContact = new Contact({ name, email, subject, message });
+    await newContact.save();
+    res.status(201).json({ message: "Contact form submitted successfully!" });
   } catch (error) {
-    res.status(500).json({ message: "Server error, please try again later." });
+    console.error(error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+exports.getAllContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    res.status(200).json(contacts);
+  } catch (error) {
+    console.error(error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
+    res.status(500).json({ message: "Internal server error." });
   }
 };

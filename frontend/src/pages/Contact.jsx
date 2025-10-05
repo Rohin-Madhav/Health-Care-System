@@ -21,7 +21,7 @@ function Contact() {
     setStatus('Sending...');
     try {
       // This endpoint needs to be created on the backend
-      await api.post('/contact', formData);
+      await api.post('/users/contact', formData);
       setStatus('Message sent successfully!');
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {

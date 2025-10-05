@@ -4,6 +4,9 @@ const authorizeRoles = require("../middileware/roleMiddilware");
 const userControllers = require("../controllers/userControllers");
 const scheduleControllers = require("../controllers/schedulecontrollers");
 
+
+
+router.post("/contact",userControllers.handleContactForm)
 //#region admin
 router.patch(
   "/approveDoctor/:id",
@@ -23,6 +26,7 @@ router.delete(
   authorizeRoles("admin"),
   userControllers.deleteDoctor
 );
+router.get("/allContacts",userAuth,authorizeRoles("admin"),userControllers.getAllContacts)
 
 //#region doctor,admin
 router.get(
@@ -50,7 +54,7 @@ router.get(
   userControllers.getAllAppointments
 );
 router.get(
-  "/appointments/:id",
+  "/appointments/:patientId",
   userAuth,
   authorizeRoles("admin", "doctor", "patient"),
   userControllers.getAppointmentById
@@ -124,5 +128,6 @@ router.post(
   authorizeRoles("doctor", "admin"),
   userControllers.createMedicalRecord
 );
+
 
 module.exports = router;

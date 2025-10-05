@@ -15,6 +15,8 @@ import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientLayout from "./components/layoutes/patient/PatientLayout";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Appointment from "./pages/patient/Appointment";
+import ViewAppointment from "./pages/patient/ViewAppointment";
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
           </Route>
           <Route path="/patient" element={<PatientLayout />}>
             <Route path="patient-dashboard" element={<PatientDashboard />} />
+            <Route path="book-appointment" element={<Appointment />} />
+            <Route path="view-appointment" element={<ViewAppointment />} />
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/patientLogin" element={<PatientLogin />} />
