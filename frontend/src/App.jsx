@@ -17,6 +17,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Appointment from "./pages/patient/Appointment";
 import ViewAppointment from "./pages/patient/ViewAppointment";
+import MyPayments from "./pages/patient/MyPayments";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="patient-dashboard" element={<PatientDashboard />} />
             <Route path="book-appointment" element={<Appointment />} />
             <Route path="view-appointment" element={<ViewAppointment />} />
+            <Route path="view-payments" element={<MyPayments />} />
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/patientLogin" element={<PatientLogin />} />

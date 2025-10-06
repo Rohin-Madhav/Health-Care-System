@@ -186,7 +186,6 @@ exports.createAppointment = async (req, res) => {
         time,
         clientName,
         reason,
-        
       });
       await newAppointment.save();
       res.status(201).json(newAppointment);
@@ -231,9 +230,8 @@ exports.getAppointmentById = async (req, res) => {
       return res.status(400).json({ message: "Invalid patient ID" });
     }
 
-    
     const appointments = await Appointment.find({ patientId })
-      .populate("doctorId", "username specialty") // your model uses doctorId
+      .populate("doctorId", "username specialty")
       .sort({ date: 1 });
 
     res.json(appointments);

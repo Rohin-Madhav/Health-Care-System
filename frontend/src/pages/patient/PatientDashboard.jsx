@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
 import api from "../../services/Api";
 import { useNavigate } from "react-router-dom";
+import { useEffectEvent } from "react";
 
 export default function PatientDashboard() {
   const [patientData, setPatientData] = useState(null);
@@ -9,7 +10,7 @@ export default function PatientDashboard() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -101,7 +102,7 @@ export default function PatientDashboard() {
                   <span>{upcomingAppointment.time}</span>
                 </div>
                 <p className="text-gray-600">
-                  {upcomingAppointment.doctor?.username || "Unknown Doctor"}
+                  {upcomingAppointment.doctor?.doctor || "Unknown Doctor"}
                 </p>
                 <p className="text-sm text-gray-500">
                   {upcomingAppointment.service}
@@ -145,17 +146,26 @@ export default function PatientDashboard() {
             Quick Actions
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button onClick={() => navigate("/patient/book-appointment")} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <button
+              onClick={() => navigate("/patient/book-appointment")}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
               <Calendar className="w-5 h-5 mx-auto mb-2" />
               Book Appointment
             </button>
 
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <button
+              onClick={() => navigate("/patient/view-appointment")}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
               <Calendar className="w-5 h-5 mx-auto mb-2" />
               View My Appointments
             </button>
 
-            <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+            <button
+              onClick={() => navigate("/patient/view-payments")}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+            >
               <DollarSign className="w-5 h-5 mx-auto mb-2" />
               View My Payments
             </button>

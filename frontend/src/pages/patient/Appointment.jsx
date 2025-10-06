@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/Api";
 import { Calendar, Clock } from "lucide-react";
+import MyPayments from "./MyPayments";
 
 function Appointment() {
   const [doctors, setDoctors] = useState([]);
@@ -41,7 +42,13 @@ function Appointment() {
     e.preventDefault();
     setStatusMsg(null);
 
-    if (!form.doctorId || !form.date || !form.time || !form.reason.trim() || !form.clientName.trim()) {
+    if (
+      !form.doctorId ||
+      !form.date ||
+      !form.time ||
+      !form.reason.trim() ||
+      !form.clientName.trim()
+    ) {
       setStatusMsg({ type: "error", text: "Please fill all fields." });
       return;
     }
@@ -56,23 +63,27 @@ function Appointment() {
         date: form.date,
         time: form.time,
         reason: form.reason,
-        // 🧠 No status field — backend will default to "pending"
       };
 
       const res = await api.post("/users/appointment", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setStatusMsg({ type: "success", text: "Appointment created successfully." });
+      setStatusMsg({
+        type: "success",
+        text: "Appointment created successfully.",
+      });
       setForm({ doctorId: "", date: "", time: "", clientName: "", reason: "" });
     } catch (err) {
-      const msg = err?.response?.data?.message || err.message || "Failed to create appointment.";
+      const msg =
+        err?.response?.data?.message ||
+        err.message ||
+        "Failed to create appointment.";
       setStatusMsg({ type: "error", text: msg });
     } finally {
       setSubmitting(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-6">
@@ -80,15 +91,21 @@ function Appointment() {
           <div className="flex items-center gap-4 mb-6">
             <Calendar className="w-8 h-8 text-blue-600" />
             <div>
-              <h1 className="text-2xl font-semibold text-gray-800">Book an Appointment</h1>
-              <p className="text-sm text-gray-500">Choose a doctor, date, and time.</p>
+              <h1 className="text-2xl font-semibold text-gray-800">
+                Book an Appointment
+              </h1>
+              <p className="text-sm text-gray-500">
+                Choose a doctor, date, and time.
+              </p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Doctor dropdown */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select Doctor</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select Doctor
+              </label>
               {loadingDoctors ? (
                 <div className="text-gray-500">Loading doctors...</div>
               ) : (
@@ -108,10 +125,11 @@ function Appointment() {
                 </select>
               )}
             </div>
-
             {/* Client name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Client Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Client Name
+              </label>
               <input
                 type="text"
                 name="clientName"
@@ -122,11 +140,12 @@ function Appointment() {
                 placeholder="Enter your full name"
               />
             </div>
-
             {/* Date and time */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date
+                </label>
                 <input
                   type="date"
                   name="date"
@@ -136,9 +155,10 @@ function Appointment() {
                   className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-200 outline-none bg-white"
                 />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Time
+                </label>
                 <input
                   type="time"
                   name="time"
@@ -149,10 +169,11 @@ function Appointment() {
                 />
               </div>
             </div>
-
             {/* Reason */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Reason / Notes</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Reason / Notes
+              </label>
               <textarea
                 name="reason"
                 value={form.reason}
@@ -177,6 +198,11 @@ function Appointment() {
                 {statusMsg.text}
               </div>
             )}
+            <div>
+              <button>
+                Pay Now
+              </button>
+            </div>
 
             {/* Submit button */}
             <div className="flex items-center justify-end gap-3">
@@ -199,9 +225,12 @@ function Appointment() {
               <Clock className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800">Need help scheduling?</h3>
+              <h3 className="font-semibold text-gray-800">
+                Need help scheduling?
+              </h3>
               <p className="text-sm text-gray-600">
-                Call our support at (123) 456-7890 or email support@healthcare.com
+                Call our support at (123) 456-7890 or email
+                support@healthcare.com
               </p>
             </div>
           </div>
