@@ -16,6 +16,8 @@ function ViewAppointment() {
     fetchAppointments();
   }, []);
 
+
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">My Appointments</h2>

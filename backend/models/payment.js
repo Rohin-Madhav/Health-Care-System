@@ -20,9 +20,10 @@ const paymentSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  count: {
-    type: Number,
-    required: true,
+  currency: {
+    type: String,
+    enum: ["usd", "inr", "eur"],
+    required: true
   },
   status: {
     type: String,

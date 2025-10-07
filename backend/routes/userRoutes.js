@@ -3,8 +3,7 @@ const userAuth = require("../middileware/authMiddilware");
 const authorizeRoles = require("../middileware/roleMiddilware");
 const userControllers = require("../controllers/userControllers");
 const scheduleControllers = require("../controllers/schedulecontrollers");
-
-
+const paymentControllers = require("../controllers/paymentControllers");
 
 router.post("/contact",userControllers.handleContactForm)
 //#region admin
@@ -128,6 +127,7 @@ router.post(
   authorizeRoles("doctor", "admin"),
   userControllers.createMedicalRecord
 );
+
 
 
 module.exports = router;

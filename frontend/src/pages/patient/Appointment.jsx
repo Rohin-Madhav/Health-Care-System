@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/Api";
 import { Calendar, Clock } from "lucide-react";
-import MyPayments from "./MyPayments";
 
 function Appointment() {
   const [doctors, setDoctors] = useState([]);
@@ -15,6 +14,8 @@ function Appointment() {
   const [loadingDoctors, setLoadingDoctors] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
+  const [lastAppointment, setLastAppointment] = useState(null); // new: store last created appointment
+  const [creatingSession, setCreatingSession] = useState(false);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -69,9 +70,11 @@ function Appointment() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      
+      setLastAppointment(res.data); 
       setStatusMsg({
         type: "success",
-        text: "Appointment created successfully.",
+        text: "Appointment created successfully. You can pay now.",
       });
       setForm({ doctorId: "", date: "", time: "", clientName: "", reason: "" });
     } catch (err) {
@@ -84,6 +87,43 @@ function Appointment() {
       setSubmitting(false);
     }
   };
+
+  const handlePayNow = async () => {
+    if (!lastAppointment) return;
+    setCreatingSession(true);
+    try {
+      const token = localStorage.getItem("token");
+      const amount = 150; 
+      const currency = "usd";
+      const body = {
+        appointmentId: lastAppointment._id || lastAppointment.id,
+        doctorId: lastAppointment.doctorId || form.doctorId,
+        amount,
+        currency,
+      };
+
+      const res = await api.post("/payment/create-session", body, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const { checkoutUrl } = res.data;
+      if (checkoutUrl) {
+        
+        window.location.href = checkoutUrl;
+      } else {
+        setStatusMsg({ type: "error", text: "Unable to create checkout session." });
+      }
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err.message ||
+        "Failed to create checkout session.";
+      setStatusMsg({ type: "error", text: msg });
+    } finally {
+      setCreatingSession(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-6">
@@ -198,14 +238,9 @@ function Appointment() {
                 {statusMsg.text}
               </div>
             )}
-            <div>
-              <button>
-                Pay Now
-              </button>
-            </div>
 
             {/* Submit button */}
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex items-center justify-between gap-3">
               <button
                 type="submit"
                 disabled={submitting}
@@ -214,6 +249,18 @@ function Appointment() {
                 <Calendar className="w-4 h-4" />
                 {submitting ? "Booking..." : "Book Appointment"}
               </button>
+
+              {/* Pay Now button appears after booking */}
+              {lastAppointment && (
+                <button
+                  type="button"
+                  onClick={handlePayNow}
+                  disabled={creatingSession}
+                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md disabled:opacity-60"
+                >
+                  {creatingSession ? "Redirecting..." : "Pay Now"}
+                </button>
+              )}
             </div>
           </form>
         </div>
