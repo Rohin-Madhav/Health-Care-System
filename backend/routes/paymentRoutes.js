@@ -1,23 +1,27 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+
 const userAuth = require("../middileware/authMiddilware");
 const authorizeRoles = require("../middileware/roleMiddilware");
 const paymentControllers = require("../controllers/paymentControllers");
 
-
 router.post("/success", paymentControllers.paymentSuccess);
+
 router.get(
   "/my/:id",
   userAuth,
   authorizeRoles("patient"),
   paymentControllers.getMyPayments
 );
+
 router.get(
   "/all",
   userAuth,
   authorizeRoles("admin"),
   paymentControllers.getAllPayments
 );
-// Payment routes (patient creates session and confirms)
+
 router.post(
   "/create-session",
   userAuth,
@@ -26,9 +30,14 @@ router.post(
 );
 
 router.post(
-  "/confirm",
-  userAuth,
-  paymentControllers.confirmPayment
+  "/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  async (req, res) => {
+    if (typeof paymentControllers.handleWebhook === "function") {
+      return paymentControllers.handleWebhook(req, res);
+    }
+    res.status(500).send("Webhook handler not available");
+  }
 );
 
 module.exports = router;

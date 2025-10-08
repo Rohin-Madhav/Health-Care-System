@@ -30,6 +30,10 @@ const paymentSchema = new mongoose.Schema({
     enum: ["pending", "success", "failed"],
     default: "pending",
   },
+    sessionId: {               
+    type: String,
+    index: true,
+  },
   paymentMethod: {
     type: String,
   },

@@ -27,7 +27,7 @@ function PatientLayout() {
                 <FileText size={20} />
                 <span>Medical Records</span>
               </Link>
-              <Link to="/patient/payments" className="flex items-center space-x-2 hover:text-green-200">
+              <Link to="/patient/view-payments" className="flex items-center space-x-2 hover:text-green-200">
                 <CreditCard size={20} />
                 <span>Payments</span>
               </Link>
@@ -45,7 +45,7 @@ function PatientLayout() {
             <div className="md:hidden py-4 space-y-3">
               <Link to="/patient/book-appointment" className="block py-2 hover:text-green-200">Book Appointment</Link>
               <Link to="/patient/medical-records" className="block py-2 hover:text-green-200">Medical Records</Link>
-              <Link to="/patient/payments" className="block py-2 hover:text-green-200">Payments</Link>
+              <Link to="/patient/view-payments" className="block py-2 hover:text-green-200">Payments</Link>
               <button onClick={() => navigate("/")} className="w-full bg-white text-green-600 py-2 rounded">Logout</button>
             </div>
           )}

@@ -1,8 +1,6 @@
 const stripe = require("../utils/stripe");
 const Payment = require("../models/payment");
 
-
-
 exports.paymentSuccess = async (req, res) => {
   try {
     const { paymentId, transactionId } = req.body;
@@ -37,7 +35,6 @@ exports.getAllPayments = async (req, res) => {
   }
 };
 
-// New: create a Stripe Checkout Session and a pending Payment record
 exports.createCheckoutSession = async (req, res) => {
   try {
     const { appointmentId, doctorId, amount, currency } = req.body;
@@ -47,7 +44,6 @@ exports.createCheckoutSession = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Create a pending payment record first
     const payment = await Payment.create({
       appointmentId,
       patientId,
@@ -58,7 +54,6 @@ exports.createCheckoutSession = async (req, res) => {
       paymentMethod: "stripe_checkout",
     });
 
-    // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -81,45 +76,46 @@ exports.createCheckoutSession = async (req, res) => {
         patientId: patientId.toString(),
         doctorId: doctorId.toString(),
       },
-      success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&paymentId=${payment._id}`,
-      cancel_url: `${process.env.FRONTEND_URL}/appointment`,
+      success_url: `${process.env.FRONTEND_URL}/patient/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/patient/payment-cancel`,
     });
+    payment.sessionId = session.id;
+    await payment.save();
 
-    return res.status(200).json({ checkoutUrl: session.url, paymentId: payment._id });
-  } catch (error) {
-    console.error("createCheckoutSession error:", error);
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-// New: confirm payment after Stripe redirect (frontend posts session_id + paymentId)
-exports.confirmPayment = async (req, res) => {
-  try {
-    const { sessionId, paymentId } = req.body;
-    if (!sessionId || !paymentId) {
-      return res.status(400).json({ message: "sessionId and paymentId are required" });
-    }
-
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    // session.payment_status can be 'paid' when completed
-    if (session.payment_status === "paid") {
-      // stripe stores payment_intent
-      const transactionId = session.payment_intent || session.id;
-
-      const updated = await Payment.findByIdAndUpdate(
-        paymentId,
-        { status: "success", transactionId },
-        { new: true }
-      );
-
-      return res.status(200).json({ message: "Payment confirmed", payment: updated });
-    }
-
-    return res.status(400).json({ message: "Payment not completed", session });
+    return res.status(200).json({
+      checkoutUrl: session.url,
+      paymentId: payment._id,
+    });
   } catch (error) {
     console.error("confirmPayment error:", error);
     return res.status(500).json({ message: error.message });
   }
 };
 
+exports.handleWebhook = async (req, res) => {
+  const sig = req.headers["stripe-signature"];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    console.error("⚠️ Webhook signature verification failed.", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+
+    await Payment.findOneAndUpdate(
+      { sessionId: session.id },
+      { status: "success", transactionId: session.payment_intent }
+    );
+  }
+
+  res.sendStatus(200);
+};
