@@ -14,7 +14,7 @@ function Appointment() {
   const [loadingDoctors, setLoadingDoctors] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
-  const [lastAppointment, setLastAppointment] = useState(null); // new: store last created appointment
+  const [lastAppointment, setLastAppointment] = useState(null);
   const [creatingSession, setCreatingSession] = useState(false);
 
   useEffect(() => {
@@ -70,8 +70,7 @@ function Appointment() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      
-      setLastAppointment(res.data); 
+      setLastAppointment(res.data);
       setStatusMsg({
         type: "success",
         text: "Appointment created successfully. You can pay now.",
@@ -93,7 +92,7 @@ function Appointment() {
     setCreatingSession(true);
     try {
       const token = localStorage.getItem("token");
-      const amount = 150; 
+      const amount = 150;
       const currency = "usd";
       const body = {
         appointmentId: lastAppointment._id || lastAppointment.id,
@@ -108,10 +107,12 @@ function Appointment() {
 
       const { checkoutUrl } = res.data;
       if (checkoutUrl) {
-        
         window.location.href = checkoutUrl;
       } else {
-        setStatusMsg({ type: "error", text: "Unable to create checkout session." });
+        setStatusMsg({
+          type: "error",
+          text: "Unable to create checkout session.",
+        });
       }
     } catch (err) {
       const msg =
@@ -159,7 +160,7 @@ function Appointment() {
                   <option value="">-- Choose a doctor --</option>
                   {doctors.map((d) => (
                     <option key={d._id || d.id} value={d._id || d.id}>
-                      {d.username} {d.specialty ? `• ${d.specialty}` : ""}
+                      {d.username}
                     </option>
                   ))}
                 </select>

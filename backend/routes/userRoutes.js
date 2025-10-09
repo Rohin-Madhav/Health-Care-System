@@ -49,14 +49,14 @@ router.get(
 router.get(
   "/appointments",
   userAuth,
-  authorizeRoles("admin", "doctor"),
+  authorizeRoles("admin", "doctor",),
   userControllers.getAllAppointments
 );
 router.get(
   "/appointments/:patientId",
   userAuth,
   authorizeRoles("admin", "doctor", "patient"),
-  userControllers.getAppointmentById
+  userControllers.getAppointmentPatientById
 );
 router.post(
   "/doctorSchedule",
@@ -96,6 +96,7 @@ router.post(
   authorizeRoles("patient"),
   userControllers.createAppointment
 );
+router.get("/appointment/:appointmentId",userAuth,authorizeRoles("patient","doctor","admin"),userControllers.getAppointmentById)
 router.patch(
   "/appointment/:id",
   userAuth,

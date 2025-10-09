@@ -20,6 +20,7 @@ import ViewAppointment from "./pages/patient/ViewAppointment";
 import MyPayments from "./pages/patient/MyPayments";
 import PaymentCancel from "./pages/patient/PaymentCancel";
 import StripePaymentSuccess from "./pages/patient/PaymentSuccess";
+import UpdateAppointment from "./pages/patient/UpdateAppointment";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="patient-dashboard" element={<PatientDashboard />} />
             <Route path="book-appointment" element={<Appointment />} />
             <Route path="view-appointment" element={<ViewAppointment />} />
+            <Route path="update-appointment/:id" element={<UpdateAppointment />} />
             <Route path="view-payments" element={<MyPayments />} />
             <Route path="payment-success" element={<StripePaymentSuccess />} />
             <Route path="payment-cancel" element={<PaymentCancel />} />

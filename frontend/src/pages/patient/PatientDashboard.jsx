@@ -102,7 +102,7 @@ export default function PatientDashboard() {
                   <span>{upcomingAppointment.time}</span>
                 </div>
                 <p className="text-gray-600">
-                  {upcomingAppointment.doctor?.doctor || "Unknown Doctor"}
+                  Dr. {upcomingAppointment.doctorId.username}
                 </p>
                 <p className="text-sm text-gray-500">
                   {upcomingAppointment.service}

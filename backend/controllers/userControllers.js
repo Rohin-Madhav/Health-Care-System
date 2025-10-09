@@ -222,7 +222,7 @@ exports.getAllAppointments = async (req, res) => {
   }
 };
 
-exports.getAppointmentById = async (req, res) => {
+exports.getAppointmentPatientById = async (req, res) => {
   try {
     const { patientId } = req.params;
 
@@ -241,6 +241,21 @@ exports.getAppointmentById = async (req, res) => {
   }
 };
 
+exports.getAppointmentById = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    res.status(200).json(appointment);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.updateAppointment = async (req, res) => {
   try {
     const updatedAppointment = await Appointment.findByIdAndUpdate(
@@ -250,7 +265,8 @@ exports.updateAppointment = async (req, res) => {
     );
     if (!updatedAppointment)
       return res.status(404).json({ message: "Appointment not found" });
-    res.status(200).json(updatedAppointment);
+
+    res.status(200).json(updatedAppointment.save());
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
