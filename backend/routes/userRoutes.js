@@ -5,13 +5,19 @@ const userControllers = require("../controllers/userControllers");
 const scheduleControllers = require("../controllers/schedulecontrollers");
 const paymentControllers = require("../controllers/paymentControllers");
 
-router.post("/contact",userControllers.handleContactForm)
+router.post("/contact", userControllers.handleContactForm);
 //#region admin
 router.patch(
   "/approveDoctor/:id",
   userAuth,
   authorizeRoles("admin"),
   userControllers.approveDoctor
+);
+router.get(
+  "/patients",
+  userAuth,
+  authorizeRoles("admin"),
+  userControllers.getPatients
 );
 router.post(
   "/doctor",
@@ -25,7 +31,12 @@ router.delete(
   authorizeRoles("admin"),
   userControllers.deleteDoctor
 );
-router.get("/allContacts",userAuth,authorizeRoles("admin"),userControllers.getAllContacts)
+router.get(
+  "/allContacts",
+  userAuth,
+  authorizeRoles("admin"),
+  userControllers.getAllContacts
+);
 
 //#region doctor,admin
 router.get(
@@ -34,6 +45,12 @@ router.get(
   authorizeRoles("admin", "doctor", "patient"),
   userControllers.getPatientById
 );
+router.get(
+  "/doctor/:doctorId",
+  userAuth,
+  authorizeRoles("doctor", "admin"),
+  userControllers.getDoctorsById
+);
 router.patch(
   "/doctor/:id",
   userAuth,
@@ -41,15 +58,16 @@ router.patch(
   userControllers.updateDoctor
 );
 router.get(
-  "/patients",
+  "/:doctorId/patients",
   userAuth,
-  authorizeRoles("admin", "doctor"),
-  userControllers.getPatients
+  authorizeRoles("doctor", "admin"),
+  userControllers.getPatientsByDoctor
 );
+
 router.get(
   "/appointments",
   userAuth,
-  authorizeRoles("admin", "doctor",),
+  authorizeRoles("admin", "doctor"),
   userControllers.getAllAppointments
 );
 router.get(
@@ -96,7 +114,12 @@ router.post(
   authorizeRoles("patient"),
   userControllers.createAppointment
 );
-router.get("/appointment/:appointmentId",userAuth,authorizeRoles("patient","doctor","admin"),userControllers.getAppointmentById)
+router.get(
+  "/appointment/:appointmentId",
+  userAuth,
+  authorizeRoles("patient", "doctor", "admin"),
+  userControllers.getAppointmentById
+);
 router.patch(
   "/appointment/:id",
   userAuth,
@@ -128,7 +151,5 @@ router.post(
   authorizeRoles("doctor", "admin"),
   userControllers.createMedicalRecord
 );
-
-
 
 module.exports = router;

@@ -66,6 +66,19 @@ exports.getDoctors = async (req, res) => {
   }
 };
 
+exports.getDoctorsById = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const user = await User.findById(doctorId).select("-password");
+    if (!user || user.role !== "doctor") {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.updateDoctor = async (req, res) => {
   try {
     const { id } = req.params;
@@ -117,7 +130,6 @@ exports.deleteDoctor = async (req, res) => {
 };
 exports.getPatients = async (req, res) => {
   try {
-    const patients = await User.find({ role: "patient" }).select("-password");
     res.status(200).json(patients);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -134,6 +146,33 @@ exports.getPatientById = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPatientsByDoctor = async (req, res) => {
+  try {
+    const doctorId = req.params.doctorId;
+    console.log("Doctor ID:", doctorId);
+
+    const appointments = await Appointment.find({ doctorId })
+      .populate("patientId", "username email")
+      .select("patientId");
+
+    console.log("Appointments found:", appointments.length);
+    if (appointments.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const patients = appointments.map((a) => a.patientId);
+
+    const uniquePatients = [
+      ...new Map(patients.map((p) => [p._id.toString(), p])).values(),
+    ];
+
+    res.status(200).json(uniquePatients);
+  } catch (err) {
+    console.error("Error fetching patients:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
@@ -343,57 +382,6 @@ exports.getMedicalRecordsByPatient = async (req, res) => {
     return res.status(200).json(records);
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getPatientDashboardData = async (req, res) => {
-  try {
-    const patientId = req.user._id;
-
-    // 1. Get user info
-    const user = await User.findById(patientId).select("username");
-
-    // 2. Get upcoming appointment
-    const upcomingAppointment = await Appointment.findOne({
-      patientId: patientId,
-      date: { $gte: new Date() },
-      status: "scheduled",
-    })
-      .sort({ date: 1 })
-      .populate("doctorId", "username specialty");
-
-    // 3. Get pending payments
-    const pendingPayments = await Payment.find({
-      patientId: patientId,
-      status: "pending",
-    });
-
-    const totalPendingAmount = pendingPayments.reduce(
-      (sum, payment) => sum + payment.amount,
-      0
-    );
-
-    const dashboardData = {
-      username: user.username,
-      upcomingAppointment: upcomingAppointment
-        ? {
-            date: upcomingAppointment.date.toDateString(),
-            time: upcomingAppointment.time,
-            doctor: upcomingAppointment.doctorId.username,
-            specialty: upcomingAppointment.doctorId.specialty || "General",
-          }
-        : null,
-      pendingPayments: {
-        amount: totalPendingAmount,
-        count: pendingPayments.length,
-      },
-    };
-
-    res.status(200).json(dashboardData);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching dashboard data", error: error.message });
   }
 };
 
