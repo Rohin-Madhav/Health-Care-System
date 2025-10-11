@@ -21,6 +21,10 @@ import MyPayments from "./pages/patient/MyPayments";
 import PaymentCancel from "./pages/patient/PaymentCancel";
 import StripePaymentSuccess from "./pages/patient/PaymentSuccess";
 import UpdateAppointment from "./pages/patient/UpdateAppointment";
+import ViewAllPatients from "./pages/doctor/ViewAllPatients";
+import ManageAppointments from "./pages/doctor/ManageAppointments";
+import ManageShedule from "./pages/doctor/ManageShedule";
+import AddMedicalRecord from "./pages/doctor/AddMedicalRecord";
 
 function App() {
   return (
@@ -40,8 +44,11 @@ function App() {
           </Route>
           <Route path="/doctor" element={<DoctorLayout />}>
             <Route path="doctor-dashboard" element={<DoctorDashboard />} />
-            {/* <Route path="addDoctor" element={<AddDoctor />} />
-            <Route path="patientDetails" element={<GetAllPatients />} /> */}
+            <Route path="view-patients" element={<ViewAllPatients />} />
+            <Route path="view-appointments" element={<ManageAppointments />} />
+            <Route path="schedule" element={<ManageShedule />} />
+            <Route path="medicalrecord" element={<AddMedicalRecord />} />
+          
           </Route>
           <Route path="/patient" element={<PatientLayout />}>
             <Route path="patient-dashboard" element={<PatientDashboard />} />

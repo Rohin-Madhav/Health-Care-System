@@ -29,15 +29,4 @@ router.post(
   paymentControllers.createCheckoutSession
 );
 
-router.post(
-  "/webhook",
-  bodyParser.raw({ type: "application/json" }),
-  async (req, res) => {
-    if (typeof paymentControllers.handleWebhook === "function") {
-      return paymentControllers.handleWebhook(req, res);
-    }
-    res.status(500).send("Webhook handler not available");
-  }
-);
-
 module.exports = router;

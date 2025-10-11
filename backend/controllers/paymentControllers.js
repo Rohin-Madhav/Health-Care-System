@@ -34,16 +34,17 @@ exports.getAllPayments = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 exports.createCheckoutSession = async (req, res) => {
   try {
     const { appointmentId, doctorId, amount, currency } = req.body;
     const patientId = req.user._id;
 
+    // ✅ 1. Validate input
     if (!appointmentId || !doctorId || !amount) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // ✅ 2. Create a pending payment entry in DB
     const payment = await Payment.create({
       appointmentId,
       patientId,
@@ -54,6 +55,7 @@ exports.createCheckoutSession = async (req, res) => {
       paymentMethod: "stripe_checkout",
     });
 
+    // ✅ 3. Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -62,8 +64,13 @@ exports.createCheckoutSession = async (req, res) => {
             currency: (currency || "usd").toLowerCase(),
             product_data: {
               name: "Appointment Payment",
-              metadata: { appointmentId, doctorId },
+              metadata: {
+                appointmentId,
+                doctorId,
+                paymentId: payment._id.toString(), // ✅ included here too
+              },
             },
+            // Stripe uses smallest currency unit (e.g., cents)
             unit_amount: Math.round(amount * 100),
           },
           quantity: 1,
@@ -71,7 +78,7 @@ exports.createCheckoutSession = async (req, res) => {
       ],
       mode: "payment",
       metadata: {
-        paymentId: payment._id.toString(),
+        paymentId: payment._id.toString(), // ✅ included here for webhook matching
         appointmentId: appointmentId.toString(),
         patientId: patientId.toString(),
         doctorId: doctorId.toString(),
@@ -79,43 +86,19 @@ exports.createCheckoutSession = async (req, res) => {
       success_url: `${process.env.FRONTEND_URL}/patient/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/patient/payment-cancel`,
     });
+
+    // ✅ 4. Save session ID to the payment record
     payment.sessionId = session.id;
     await payment.save();
 
+    // ✅ 5. Respond with the checkout URL and paymentId
     return res.status(200).json({
       checkoutUrl: session.url,
       paymentId: payment._id,
     });
+
   } catch (error) {
-    console.error("confirmPayment error:", error);
+    console.error("❌ createCheckoutSession error:", error);
     return res.status(500).json({ message: error.message });
   }
-};
-
-exports.handleWebhook = async (req, res) => {
-  const sig = req.headers["stripe-signature"];
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (err) {
-    console.error("⚠️ Webhook signature verification failed.", err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-
-    await Payment.findOneAndUpdate(
-      { sessionId: session.id },
-      { status: "success", transactionId: session.payment_intent }
-    );
-  }
-
-  res.sendStatus(200);
 };

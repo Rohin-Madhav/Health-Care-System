@@ -19,11 +19,11 @@ function DoctorLayout() {
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <Link to="/doctor/appointments" className="flex items-center space-x-2 hover:text-blue-200">
+              <Link to="/doctor/view-appointments" className="flex items-center space-x-2 hover:text-blue-200">
                 <Calendar size={20} />
                 <span>My Appointments</span>
               </Link>
-              <Link to="/doctor/patients" className="flex items-center space-x-2 hover:text-blue-200">
+              <Link to="/doctor/view-patients" className="flex items-center space-x-2 hover:text-blue-200">
                 <ClipboardList size={20} />
                 <span>Patient Records</span>
               </Link>
@@ -39,8 +39,8 @@ function DoctorLayout() {
 
           {mobileMenuOpen && (
             <div className="md:hidden py-4 space-y-3">
-              <Link to="/doctor/appointments" className="block py-2 hover:text-blue-200">My Appointments</Link>
-              <Link to="/doctor/patients" className="block py-2 hover:text-blue-200">Patient Records</Link>
+              <Link to="/doctor/view-appointments" className="block py-2 hover:text-blue-200">My Appointments</Link>
+              <Link to="/doctor/view-patients" className="block py-2 hover:text-blue-200">Patient Records</Link>
               <button onClick={() => navigate("/")} className="w-full bg-white text-blue-700 py-2 rounded">Logout</button>
             </div>
           )}

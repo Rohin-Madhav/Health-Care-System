@@ -83,13 +83,13 @@ router.post(
   scheduleControllers.createSchedule
 );
 router.patch(
-  "/doctorSchedule/:id",
+  "/doctorSchedule/:scheduleId",
   userAuth,
   authorizeRoles("admin", "doctor"),
   scheduleControllers.updateSchedule
 );
 router.delete(
-  "/doctorSchedul/:id",
+  "/doctorSchedul/:sheduleId",
   userAuth,
   authorizeRoles("admin", "doctor"),
   scheduleControllers.deleteSchedule
@@ -133,9 +133,9 @@ router.delete(
   userControllers.deleteAppointment
 );
 router.get(
-  "/doctorSchedules",
+  "/doctorSchedules/:doctorId",
   userAuth,
-  authorizeRoles("admin", "patient"),
+  authorizeRoles("admin", "patient","doctor"),
   scheduleControllers.getSchedulesByDoctor
 );
 

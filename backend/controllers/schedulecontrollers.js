@@ -12,8 +12,8 @@ exports.getSchedulesByDoctor = async (req, res) => {
 
 exports.createSchedule = async (req, res) => {
   try {
-    const { doctorId, date, startTime, endTime } = req.body;
-    const newSchedule = new DrSchedule({ doctorId, date, startTime, endTime });
+    const { doctorId, date, availableSlots } = req.body;
+    const newSchedule = new DrSchedule({ doctorId, date, availableSlots });
     const savedSchedule = await newSchedule.save();
     res.status(201).json(savedSchedule);
   } catch (err) {
@@ -23,10 +23,14 @@ exports.createSchedule = async (req, res) => {
 
 exports.updateSchedule = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedSchedule = await DrSchedule.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const { scheduleId } = req.params;
+    const updatedSchedule = await DrSchedule.findByIdAndUpdate(
+      scheduleId,
+      req.body,
+      {
+        new: true,
+      }
+    );
     if (!updatedSchedule) {
       return res.status(404).json({ message: "Schedule not found" });
     }
@@ -38,8 +42,8 @@ exports.updateSchedule = async (req, res) => {
 
 exports.deleteSchedule = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedSchedule = await DrSchedule.findByIdAndDelete(id);
+    const { sheduleId } = req.params;
+    const deletedSchedule = await DrSchedule.findByIdAndDelete(sheduleId);
     if (!deletedSchedule) {
       return res.status(404).json({ message: "Schedule not found" });
     }

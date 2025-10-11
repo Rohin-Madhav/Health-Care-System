@@ -152,13 +152,11 @@ exports.getPatientById = async (req, res) => {
 exports.getPatientsByDoctor = async (req, res) => {
   try {
     const doctorId = req.params.doctorId;
-    console.log("Doctor ID:", doctorId);
 
     const appointments = await Appointment.find({ doctorId })
       .populate("patientId", "username email")
       .select("patientId");
 
-    console.log("Appointments found:", appointments.length);
     if (appointments.length === 0) {
       return res.status(200).json([]);
     }
@@ -171,7 +169,6 @@ exports.getPatientsByDoctor = async (req, res) => {
 
     res.status(200).json(uniquePatients);
   } catch (err) {
-    console.error("Error fetching patients:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
@@ -238,26 +235,16 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAllAppointments = async (req, res) => {
   try {
-    const role = req.user.role;
-    const userId = req.user._id;
-    let filter = {};
+    const doctorId = req.user._id; 
 
-    if (role === "doctor") {
-      filter = { doctor: userId };
-    } else if (role === "admin") {
-      filter = {};
-    } else {
-      return res.status(403).json({ message: "Unauthorized role" });
-    }
-
-    const appointments = await Appointment.find(filter)
-      .populate("doctor", "username email")
-      .populate("patient", "username email")
+    const appointments = await Appointment.find({ doctorId })
+      .populate("patientId", "username email")
       .sort({ date: 1 });
 
     res.status(200).json(appointments);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error("Error fetching appointments:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
