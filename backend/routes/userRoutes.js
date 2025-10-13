@@ -3,7 +3,6 @@ const userAuth = require("../middileware/authMiddilware");
 const authorizeRoles = require("../middileware/roleMiddilware");
 const userControllers = require("../controllers/userControllers");
 const scheduleControllers = require("../controllers/schedulecontrollers");
-const paymentControllers = require("../controllers/paymentControllers");
 
 router.post("/contact", userControllers.handleContactForm);
 //#region admin
@@ -76,6 +75,12 @@ router.get(
   authorizeRoles("admin", "doctor", "patient"),
   userControllers.getAppointmentPatientById
 );
+router.patch(
+  "/status/:appointmentId",
+  userAuth,
+  authorizeRoles("doctor", "admin"),
+  userControllers.updateAppointmentStatus
+);
 router.post(
   "/doctorSchedule",
   userAuth,
@@ -129,20 +134,20 @@ router.patch(
 router.delete(
   "/appointment/:id",
   userAuth,
-  authorizeRoles("patient", "admin"),
+  authorizeRoles("patient", "admin","doctor"),
   userControllers.deleteAppointment
 );
 router.get(
   "/doctorSchedules/:doctorId",
   userAuth,
-  authorizeRoles("admin", "patient","doctor"),
+  authorizeRoles("admin", "patient", "doctor"),
   scheduleControllers.getSchedulesByDoctor
 );
 
 //#region medical record routes
 router.get(
   "medicalRecord/:id",
-  userAuth,
+  userAuth,authorizeRoles("patient","admin","doctor"),
   userControllers.getMedicalRecordsByPatient
 );
 router.post(

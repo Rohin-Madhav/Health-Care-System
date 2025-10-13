@@ -1,7 +1,6 @@
 const User = require("../models/userSchema");
 const Appointment = require("../models/appointment");
 const MedicalRecord = require("../models/medicaleRecord");
-const Payment = require("../models/payment");
 const Contact = require("../models/contact");
 
 exports.approveDoctor = async (req, res) => {
@@ -235,7 +234,7 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAllAppointments = async (req, res) => {
   try {
-    const doctorId = req.user._id; 
+    const doctorId = req.user._id;
 
     const appointments = await Appointment.find({ doctorId })
       .populate("patientId", "username email")
@@ -295,6 +294,33 @@ exports.updateAppointment = async (req, res) => {
     res.status(200).json(updatedAppointment.save());
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+exports.updateAppointmentStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { appointmentId } = req.params;
+
+    if (!["approved", "completed", "cancelled"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status provided" });
+    }
+
+    const appointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status: status },
+      { new: true, runValidators: true }
+    );
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.json({
+      message: "Appointment status updated successfully",
+      appointment,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 

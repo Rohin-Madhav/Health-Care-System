@@ -26,16 +26,9 @@ const medicalRecordSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    fileName: {
-      type: String,
-      required: true,
-    },
-    filePath: {
-      type: String,
-      required: true,
-    },
     notes: {
       type: String,
+      required: true
     },
   },
   {
