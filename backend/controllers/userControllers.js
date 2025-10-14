@@ -236,11 +236,38 @@ exports.getAllAppointments = async (req, res) => {
   try {
     const doctorId = req.user._id;
 
-    const appointments = await Appointment.find({ doctorId })
-      .populate("patientId", "username email")
-      .sort({ date: 1 });
+    // pagination
+    const page = parseInt(req.query.page, 10) || 1; // 1-based
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
 
-    res.status(200).json(appointments);
+    // filter by doctor for doctor role, admin can see all
+    let filter = {};
+    if (req.user.role === "doctor") {
+      filter = { doctorId };
+    } else if (req.user.role === "admin") {
+      filter = {};
+    } else {
+      return res.status(403).json({ message: "Unauthorized role" });
+    }
+
+    const [appointments, totalItems] = await Promise.all([
+      Appointment.find(filter)
+        .populate("patientId", "username email")
+        .sort({ date: 1 })
+        .skip(skip)
+        .limit(limit),
+      Appointment.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    res.json({
+      appointments,
+      currentPage: page,
+      totalPages,
+      totalItems,
+    });
   } catch (err) {
     console.error("Error fetching appointments:", err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -338,21 +365,35 @@ exports.deleteAppointment = async (req, res) => {
 };
 
 exports.createMedicalRecord = async (req, res) => {
-  const { patient, diagnosis, treatment, doctor, notes } = req.body;
+  try {
+    const { patient, diagnosis, treatment, doctor, notes, date } = req.body;
 
-  if (!patient || !diagnosis || !treatment || !doctor) {
-    return res.status(400).json({ message: "Please fill all required fields" });
+    if (!patient || !diagnosis || !treatment || !doctor || !notes) {
+      return res
+        .status(400)
+        .json({ message: "Please fill all required fields" });
+    }
+
+    const patientUser = await User.findOne({ username: patient });
+    const doctorUser = await User.findOne({ username: doctor });
+
+    if (!patientUser || !doctorUser) {
+      return res.status(404).json({ message: "Doctor or patient not found" });
+    }
+
+    const medicalRecord = await MedicalRecord.create({
+      patient: patientUser._id,
+      doctor: doctorUser._id,
+      treatment,
+      diagnosis,
+      notes,
+      date,
+    });
+
+    res.status(201).json(medicalRecord);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
-  const medicalRecord = await MedicalRecord.create({
-    patient,
-    diagnosis,
-    treatment,
-    doctor,
-    notes,
-  });
-
-  res.status(201).json(medicalRecord);
 };
 
 exports.getMedicalRecordsByPatient = async (req, res) => {

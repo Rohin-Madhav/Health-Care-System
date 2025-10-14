@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
+
 import {
   Calendar,
   Users,
@@ -20,7 +21,8 @@ export default function DoctorDashboard() {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  
 
   useEffect(() => {
     const fetchData = async () => {
