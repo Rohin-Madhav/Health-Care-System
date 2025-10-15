@@ -22,6 +22,7 @@ function StaffLogin() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("doctorId", data.user.id);
         localStorage.setItem("role", data.user.role);
+        localStorage.setItem("doctorName", data.user.username); 
       }
 
       const roleNormalized = data?.user?.role?.toLowerCase?.();

@@ -2,11 +2,15 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const doctorSchedule = new mongoose.Schema({
-  doctorId: {
+  doctor: {
     type: Schema.Types.ObjectId,
-    ref: "Doctor", 
+    ref: "User", 
     required: true,
   },
+   doctorId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   date: {
     type: Date,
     required: true,
@@ -20,14 +24,6 @@ const doctorSchedule = new mongoose.Schema({
       endTime: {
         type: String, 
         required: true,
-      },
-      isBooked: {
-        type: Boolean,
-        default: false,
-      },
-      patientId: {
-        type: Schema.Types.ObjectId,
-        ref: "Patient", 
       },
     },
   ],

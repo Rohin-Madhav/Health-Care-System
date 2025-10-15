@@ -236,7 +236,7 @@ exports.getAllAppointments = async (req, res) => {
   try {
     const doctorId = req.user._id;
 
-    // pagination
+   
     const page = parseInt(req.query.page, 10) || 1; // 1-based
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;

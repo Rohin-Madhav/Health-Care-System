@@ -10,7 +10,7 @@ function DoctorLayout() {
    
   return (
     <div>
-      <nav className="bg-blue-700 text-white shadow-lg">
+      <nav className="bg-zinc-500 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   Calendar,
@@ -21,8 +21,7 @@ export default function DoctorDashboard() {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,9 +51,9 @@ export default function DoctorDashboard() {
         ]);
 
         setDoctorData(userRes.data);
-        setAppointments(aptRes.data);
+        setAppointments(aptRes.data.appointments || []);
         setPatients(patientsRes.data);
-        setSchedules(scheRes.data);
+        setSchedules(scheRes.data || []);
       } catch (error) {
         console.error(error);
         setError("Error fetching Doctors");
@@ -274,7 +273,7 @@ export default function DoctorDashboard() {
                   >
                     <div className="flex justify-between items-start mb-3">
                       <h3 className="font-bold text-slate-800 text-lg">
-                        {a.clientName}
+                        {a.patientId?.username || "Unknown Patient"}
                       </h3>
                       <span
                         className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
@@ -325,7 +324,7 @@ export default function DoctorDashboard() {
               </div>
             </div>
             <div className="space-y-3 max-h-96 overflow-y-auto">
-              {schedules.length > 0 ? (
+              {Array.isArray(schedules) && schedules.length > 0 ? (
                 schedules.map((s) => (
                   <div
                     key={s._id}
@@ -333,29 +332,29 @@ export default function DoctorDashboard() {
                   >
                     <div className="flex justify-between items-center mb-3">
                       <span className="text-sm font-bold text-slate-800">
-                        {s.date}
-                      </span>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          s.availableSlots?.isBooked
-                            ? "bg-rose-100 text-rose-700 border border-rose-200"
-                            : "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                        }`}
-                      >
-                        {s.availableSlots?.isBooked ? "Booked" : "Available"}
+                        {new Date(s.date).toLocaleDateString()}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-slate-600 font-medium">
-                        {s.availableSlots?.startTime} -{" "}
-                        {s.availableSlots?.endTime}
-                      </span>
-                      {s.availableSlots?.patientId && (
-                        <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
-                          ID: {s.availableSlots.patientId}
-                        </span>
-                      )}
-                    </div>
+
+                    {Array.isArray(s.availableSlots) &&
+                    s.availableSlots.length > 0 ? (
+                      <div className="space-y-1">
+                        {s.availableSlots.map((slot, idx) => (
+                          <div
+                            key={idx}
+                            className="flex justify-between text-sm text-slate-600 font-medium"
+                          >
+                            <span>
+                              {slot.startTime} - {slot.endTime}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">
+                        No available slots
+                      </p>
+                    )}
                   </div>
                 ))
               ) : (
