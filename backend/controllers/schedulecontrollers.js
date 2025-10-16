@@ -14,6 +14,23 @@ exports.getSchedulesByDoctor = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getScheduleById = async (req, res) => {
+  try {
+    const { scheduleId } = req.params;
+    const schedule = await DrSchedule.findById(scheduleId)
+      .populate("doctor", "username email");
+
+    if (!schedule) {
+      return res.status(404).json({ message: "Schedule not found" });
+    }
+
+    res.status(200).json(schedule);
+  } catch (err) {
+    console.error("Error fetching schedule by ID:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 exports.createSchedule = async (req, res) => {
   try {
@@ -44,26 +61,29 @@ exports.createSchedule = async (req, res) => {
   }
 };
 
-
 exports.updateSchedule = async (req, res) => {
   try {
     const { scheduleId } = req.params;
+    const { date, availableSlots } = req.body;
+
     const updatedSchedule = await DrSchedule.findByIdAndUpdate(
       scheduleId,
-      req.body,
-      {
-        new: true,
-      }
+      { date, availableSlots }, // overwrite entire array
+      { new: true }
     );
+
+   
+
     if (!updatedSchedule) {
       return res.status(404).json({ message: "Schedule not found" });
     }
+
     res.status(200).json(updatedSchedule);
   } catch (err) {
+    
     res.status(400).json({ message: err.message });
   }
 };
-
 exports.deleteSchedule = async (req, res) => {
   try {
     const { sheduleId } = req.params;

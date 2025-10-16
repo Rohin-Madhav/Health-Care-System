@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/Api";
 
 function UpdateAppointment() {
-  const { id } = useParams(); // appointmentId
+  const { id } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [formData, setFormData] = useState({
     date: "",
@@ -27,7 +27,6 @@ function UpdateAppointment() {
         const appt = response.data;
         setAppointment(appt);
 
-        // normalize date to yyyy-mm-dd for input[type=date]
         const dateISO = appt.date
           ? new Date(appt.date).toISOString().slice(0, 10)
           : "";
@@ -63,7 +62,6 @@ function UpdateAppointment() {
     try {
       const token = localStorage.getItem("token");
 
-      // Prepare payload with updated data (send ISO date)
       const payload = {
         date: new Date(formData.date).toISOString(),
         time: formData.time,

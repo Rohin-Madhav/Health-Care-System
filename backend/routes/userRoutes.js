@@ -99,6 +99,12 @@ router.delete(
   authorizeRoles("admin", "doctor"),
   scheduleControllers.deleteSchedule
 );
+router.get(
+  "/doctorSchedule/:scheduleId",
+  userAuth,
+  authorizeRoles("doctor", "admin"),
+  scheduleControllers.getScheduleById
+);
 
 //#region patient,admin
 router.get(
@@ -134,7 +140,7 @@ router.patch(
 router.delete(
   "/appointment/:id",
   userAuth,
-  authorizeRoles("patient", "admin","doctor"),
+  authorizeRoles("patient", "admin", "doctor"),
   userControllers.deleteAppointment
 );
 router.get(
@@ -144,10 +150,12 @@ router.get(
   scheduleControllers.getSchedulesByDoctor
 );
 
+
 //#region medical record routes
 router.get(
-  "medicalRecord/:id",
-  userAuth,authorizeRoles("patient","admin","doctor"),
+  "/medicalRecord/:id",
+  userAuth,
+  authorizeRoles("patient", "admin", "doctor"),
   userControllers.getMedicalRecordsByPatient
 );
 router.post(

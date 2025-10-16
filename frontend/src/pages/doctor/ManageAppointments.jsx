@@ -249,7 +249,7 @@ function ManageAppointments() {
             {/* Mobile Card View */}
             <div className="lg:hidden divide-y divide-slate-200">
               {appointments.map((a) => (
-                <div key={a._1d} className="p-4 hover:bg-slate-50">
+                <div key={a._id} className="p-4 hover:bg-slate-50">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center">
@@ -277,7 +277,7 @@ function ManageAppointments() {
                     {a.status !== "approved" && a.status !== "completed" && (
                       <button
                         onClick={() => handleStatusUpdate(a._id, "approved")}
-                        className="inline-flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg"
+                        className="inline-flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors duration-200 shadow-sm"
                       >
                         <CheckCircle className="w-3.5 h-3.5" />
                         Approve
@@ -287,14 +287,14 @@ function ManageAppointments() {
                     {a.status === "approved" && (
                       <button
                         onClick={() => handleStatusUpdate(a._id, "completed")}
-                        className="inline-flex items-center gap-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg"
+                        className="inline-flex items-center gap-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg transition-colors duration-200 shadow-sm"
                       >
                         <CheckCircle className="w-3.5 h-3.5" />
                         Complete
                       </button>
                     )}
                     <button
-                      className="inline-flex items-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-lg"
+                      className="inline-flex items-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                       onClick={() => handleCancel(a._id)}
                     >
                       <Trash2 className="w-3.5 h-3.5" />

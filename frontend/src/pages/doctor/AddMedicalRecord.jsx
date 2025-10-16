@@ -1,15 +1,15 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  FileText, 
-  User, 
-  Calendar, 
-  Stethoscope, 
-  Pill, 
+import {
+  FileText,
+  User,
+  Calendar,
+  Stethoscope,
+  Pill,
   FileEdit,
   ArrowLeft,
-  Save
+  Save,
 } from "lucide-react";
 import api from "../../services/Api";
 
@@ -21,7 +21,7 @@ function AddMedicalRecord() {
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -37,14 +37,14 @@ function AddMedicalRecord() {
         notes,
         doctor,
       });
-      
+
       setPatient("");
       setDiagnosis("");
       setDoctor("");
       setTreatment("");
       setDate("");
       setNotes("");
-      
+
       alert("Medical Record Added Successfully");
       navigate("/doctor/view-appointments");
     } catch (error) {
@@ -247,7 +247,8 @@ function AddMedicalRecord() {
                 Important Information
               </h3>
               <p className="text-sm text-blue-700">
-                Please ensure all information is accurate before submitting. Medical records are confidential and will be stored securely.
+                Please ensure all information is accurate before submitting.
+                Medical records are confidential and will be stored securely.
               </p>
             </div>
           </div>
