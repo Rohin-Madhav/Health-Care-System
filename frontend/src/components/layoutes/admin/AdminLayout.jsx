@@ -10,38 +10,43 @@ function AdminLayout() {
 
   return (
     <div>
-      <nav className="bg-gray-800 text-white shadow-lg">
+      <nav  className="bg-gray-800 text-white  shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-around items-center h-16">
             <div className="flex items-center space-x-2">
               <Settings className="w-8 h-8" />
-              <span className="text-2xl font-bold">Admin Panel</span>
+              <span className="text-2xl  font-bold">Admin Panel</span>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <Link to="/admin/doctors" className="flex items-center space-x-2 hover:text-blue-400">
-                <Users size={20} />
-                <span>Manage Doctors</span>
-              </Link>
-              <Link to="/admin/patients" className="flex items-center space-x-2 hover:text-blue-400">
-                <Users size={20} />
-                <span>Manage Patients</span>
-              </Link>
-              <button onClick={() => navigate("/")} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">
+              <button
+                onClick={() => navigate("/")}
+                className="bg-red-600 hover:bg-red-700 px-4 py-2  rounded"
+              >
                 Logout
               </button>
             </div>
 
-            <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <button
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
 
           {mobileMenuOpen && (
             <div className="md:hidden py-4 space-y-3">
-              <Link to="/admin/doctors" className="block py-2 hover:text-blue-400">Manage Doctors</Link>
-              <Link to="/admin/patients" className="block py-2 hover:text-blue-400">Manage Patients</Link>
-              <button onClick={() => navigate("/")} className="w-full bg-red-600 py-2 rounded">Logout</button>
+              <button
+                onClick={() => navigate("/")}
+                className="w-full bg-red-600 py-2 rounded"
+              >
+                Logout
+              </button>
             </div>
           )}
         </div>

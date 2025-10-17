@@ -2,6 +2,7 @@ const User = require("../models/userSchema");
 const Appointment = require("../models/appointment");
 const MedicalRecord = require("../models/medicaleRecord");
 const Contact = require("../models/contact");
+const Payment = require("../models/payment");
 
 exports.approveDoctor = async (req, res) => {
   try {
@@ -237,7 +238,6 @@ exports.getAllAppointments = async (req, res) => {
   try {
     const doctorId = req.user._id;
 
-   
     const page = parseInt(req.query.page, 10) || 1; // 1-based
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
@@ -467,4 +467,25 @@ exports.getAllContacts = async (req, res) => {
     }
     res.status(500).json({ message: "Internal server error." });
   }
+};
+
+exports.getOverview = async (req, res) => {
+  try {
+    const totalDoctors = await User.countDocuments({ role: "doctor" });
+    const totalPatients = await User.countDocuments({ role: "patient" });
+    const totalAppointment = await Appointment.countDocuments();
+    const toatalRevanue = await Payment.aggregate([
+      { $group: { _id: null, total: { $sum: "$amount" } } },
+    ]);
+  
+    res.status(200).json({
+      toatalRevanue,
+      totalAppointment,
+      totalDoctors,
+      totalPatients,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+  
 };

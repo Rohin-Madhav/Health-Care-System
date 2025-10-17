@@ -6,6 +6,12 @@ const scheduleControllers = require("../controllers/schedulecontrollers");
 
 router.post("/contact", userControllers.handleContactForm);
 //#region admin
+router.get(
+  "/overview",
+  userAuth,
+  authorizeRoles("admin"),
+  userControllers.getOverview
+);
 router.patch(
   "/approveDoctor/:id",
   userAuth,
@@ -149,7 +155,6 @@ router.get(
   authorizeRoles("admin", "patient", "doctor"),
   scheduleControllers.getSchedulesByDoctor
 );
-
 
 //#region medical record routes
 router.get(

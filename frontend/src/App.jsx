@@ -5,8 +5,7 @@ import Layout from "./components/layoutes/layout/Layout";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import AdminLayout from "./components/layoutes/admin/adminLayout";
 import AdminDashboard from "./pages/admin/Admindashboard";
-import AddDoctor from "./pages/admin/AddDoctor";
-import GetAllPatients from "./pages/admin/GetAllPatients";
+import AddDoctor from "./pages/admin/manage doctors/AddDoctor";
 import DoctorLayout from "./components/layoutes/doctor/DoctorLayout";
 import Register from "./pages/Register";
 import PatientLogin from "./pages/PatientLogin";
@@ -26,6 +25,11 @@ import ManageAppointments from "./pages/doctor/ManageAppointments";
 import ManageShedule from "./pages/doctor/ManageShedule";
 import AddMedicalRecord from "./pages/doctor/AddMedicalRecord";
 import UpdateSchedule from "./pages/doctor/UpdateSchedule";
+import ManagePatients from "./pages/admin/manage patients/ManagePatients";
+import ManageDoctors from "./pages/admin/manage doctors/ManageDoctors";
+import Appointments from "./pages/admin/appointments/Appointments";
+import Schedules from "./pages/admin/schedules/Schedules";
+import ViewAllPayments from "./pages/admin/payments/ViewAllPayments";
 
 function App() {
   return (
@@ -40,8 +44,12 @@ function App() {
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="admin-dashboard" element={<AdminDashboard />} />
+            <Route path="manage-doctors" element={<ManageDoctors />} />
             <Route path="addDoctor" element={<AddDoctor />} />
-            <Route path="patientDetails" element={<GetAllPatients />} />
+            <Route path="manage-appointments" element={<Appointments />} />
+            <Route path="manage-shedules" element={<Schedules />} />
+            <Route path="manage-patients" element={<ManagePatients />} />
+            <Route path="view-payments" element={<ViewAllPayments />} />
           </Route>
           <Route path="/doctor" element={<DoctorLayout />}>
             <Route path="doctor-dashboard" element={<DoctorDashboard />} />
