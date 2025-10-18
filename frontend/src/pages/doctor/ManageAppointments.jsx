@@ -24,7 +24,7 @@ function ManageAppointments() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // API returns { appointments, currentPage, totalPages, totalItems }
+        
         setAppointments(res.data.appointments || []);
         setTotalPages(res.data.totalPages || 1);
         setTotalItems(res.data.totalItems || 0);

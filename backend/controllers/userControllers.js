@@ -238,7 +238,7 @@ exports.getAllAppointments = async (req, res) => {
   try {
     const doctorId = req.user._id;
 
-    const page = parseInt(req.query.page, 10) || 1; // 1-based
+    const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
 
@@ -468,24 +468,113 @@ exports.getAllContacts = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
-
 exports.getOverview = async (req, res) => {
   try {
     const totalDoctors = await User.countDocuments({ role: "doctor" });
     const totalPatients = await User.countDocuments({ role: "patient" });
     const totalAppointment = await Appointment.countDocuments();
+
     const toatalRevanue = await Payment.aggregate([
       { $group: { _id: null, total: { $sum: "$amount" } } },
     ]);
-  
+
+    const appointmentStats = await Appointment.aggregate([
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+            status: "$status",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: { year: "$_id.year", month: "$_id.month" },
+          stats: {
+            $push: {
+              status: "$_id.status",
+              count: "$count",
+            },
+          },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+    ]);
+
+    const formattedStats = appointmentStats.map((item) => {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const monthName = monthNames[item._id.month - 1];
+      const completed =
+        item.stats.find((s) => s.status === "completed")?.count || 0;
+      const pending =
+        item.stats.find((s) => s.status === "pending")?.count || 0;
+
+      return {
+        month: `${monthName} ${item._id.year}`,
+        completed,
+        pending,
+      };
+    });
+    const monthlyRevenue = await Payment.aggregate([
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          totalRevenue: { $sum: "$amount" },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+    ]);
+
+    const formattedRevenue = monthlyRevenue.map((item) => {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+
+      return {
+        month: `${monthNames[item._id.month - 1]} ${item._id.year}`,
+        totalRevenue: item.totalRevenue,
+      };
+    });
+
     res.status(200).json({
       toatalRevanue,
       totalAppointment,
       totalDoctors,
       totalPatients,
+      appointmentStats: formattedStats,
+      monthlyRevenue: formattedRevenue,
     });
   } catch (error) {
+    console.error("Error fetching overview:", error);
     res.status(500).json({ message: error.message });
   }
-  
 };

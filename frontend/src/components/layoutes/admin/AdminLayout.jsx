@@ -52,7 +52,7 @@ function AdminLayout() {
         </div>
       </nav>
       <Outlet />
-      <Footer />
+      
     </div>
   );
 }
