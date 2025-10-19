@@ -34,11 +34,14 @@ function AdminDashboard() {
     totalAppointment: 0,
     toatalRevanue: 0,
     appointmentStats: "",
-    monthlyRevenue: []
+    monthlyRevenue: [],
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchOverview = async () => {
+      setLoading(true)
       try {
         const token = localStorage.getItem("token");
         const res = await api.get("/users/overview", {
@@ -46,12 +49,36 @@ function AdminDashboard() {
         });
         setOverview(res.data);
       } catch (error) {
-        console.log("error fetching overviews", error);
+        setError("error fetching overviews", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOverview();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
+          <p className="text-slate-600 font-medium">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md">
+          <XCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
+          <p className="text-rose-600 text-center font-medium">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -153,41 +180,53 @@ function AdminDashboard() {
             {/* Header */}
             <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
               <SidebarTrigger>
-                <Button variant="outline" size="icon" className="hover:bg-gray-100">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="hover:bg-gray-100"
+                >
                   <Menu className="h-5 w-5" />
                 </Button>
               </SidebarTrigger>
 
-              <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+              <h1 className="text-2xl font-bold text-gray-800">
+                Admin Dashboard
+              </h1>
             </header>
 
             {/* Scrollable Content Area */}
             <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
               <Outlet />
-              
+
               {/* Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
                   <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Total Doctors
                   </h3>
-                  <p className="text-4xl font-bold text-gray-900">{overview.totalDoctors}</p>
+                  <p className="text-4xl font-bold text-gray-900">
+                    {overview.totalDoctors}
+                  </p>
                 </div>
-                
+
                 <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
                   <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Total Patients
                   </h3>
-                  <p className="text-4xl font-bold text-gray-900">{overview.totalPatients}</p>
+                  <p className="text-4xl font-bold text-gray-900">
+                    {overview.totalPatients}
+                  </p>
                 </div>
-                
+
                 <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
                   <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Total Appointments
                   </h3>
-                  <p className="text-4xl font-bold text-gray-900">{overview.totalAppointment}</p>
+                  <p className="text-4xl font-bold text-gray-900">
+                    {overview.totalAppointment}
+                  </p>
                 </div>
-                
+
                 <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
                   <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Total Revenue
@@ -208,26 +247,26 @@ function AdminDashboard() {
                   <ResponsiveContainer width="100%" height={450}>
                     <BarChart data={overview.appointmentStats}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis 
-                        dataKey="month" 
-                        tick={{ fill: '#6b7280' }}
-                        tickLine={{ stroke: '#e5e7eb' }}
+                      <XAxis
+                        dataKey="month"
+                        tick={{ fill: "#6b7280" }}
+                        tickLine={{ stroke: "#e5e7eb" }}
                       />
-                      <YAxis 
-                        tick={{ fill: '#6b7280' }}
-                        tickLine={{ stroke: '#e5e7eb' }}
+                      <YAxis
+                        tick={{ fill: "#6b7280" }}
+                        tickLine={{ stroke: "#e5e7eb" }}
                       />
-                      <Tooltip 
+                      <Tooltip
                         contentStyle={{
-                          backgroundColor: '#ffffff',
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '8px',
-                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "8px",
+                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                         }}
                       />
-                      <Legend 
+                      <Legend
                         wrapperStyle={{
-                          paddingTop: '20px'
+                          paddingTop: "20px",
                         }}
                       />
                       <Bar
@@ -236,9 +275,9 @@ function AdminDashboard() {
                         name="Completed"
                         radius={[8, 8, 0, 0]}
                       />
-                      <Bar 
-                        dataKey="pending" 
-                        fill="#fbbf24" 
+                      <Bar
+                        dataKey="pending"
+                        fill="#fbbf24"
                         name="Pending"
                         radius={[8, 8, 0, 0]}
                       />
@@ -264,26 +303,26 @@ function AdminDashboard() {
                     <ResponsiveContainer width="100%" height={350}>
                       <LineChart data={overview.monthlyRevenue}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis 
-                          dataKey="month" 
-                          tick={{ fill: '#6b7280' }}
-                          tickLine={{ stroke: '#e5e7eb' }}
+                        <XAxis
+                          dataKey="month"
+                          tick={{ fill: "#6b7280" }}
+                          tickLine={{ stroke: "#e5e7eb" }}
                         />
-                        <YAxis 
-                          tick={{ fill: '#6b7280' }}
-                          tickLine={{ stroke: '#e5e7eb' }}
+                        <YAxis
+                          tick={{ fill: "#6b7280" }}
+                          tickLine={{ stroke: "#e5e7eb" }}
                         />
-                        <Tooltip 
+                        <Tooltip
                           contentStyle={{
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                            backgroundColor: "#ffffff",
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "8px",
+                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                           }}
                         />
-                        <Legend 
+                        <Legend
                           wrapperStyle={{
-                            paddingTop: '20px'
+                            paddingTop: "20px",
                           }}
                         />
                         <Line
@@ -292,7 +331,7 @@ function AdminDashboard() {
                           stroke="#10b981"
                           strokeWidth={3}
                           name="Revenue"
-                          dot={{ fill: '#10b981', r: 5 }}
+                          dot={{ fill: "#10b981", r: 5 }}
                           activeDot={{ r: 7 }}
                         />
                       </LineChart>

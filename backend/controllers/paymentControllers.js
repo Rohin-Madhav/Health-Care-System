@@ -39,12 +39,12 @@ exports.createCheckoutSession = async (req, res) => {
     const { appointmentId, doctorId, amount, currency } = req.body;
     const patientId = req.user._id;
 
-    // ✅ 1. Validate input
+   
     if (!appointmentId || !doctorId || !amount) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // ✅ 2. Create a pending payment entry in DB
+    
     const payment = await Payment.create({
       appointmentId,
       patientId,
@@ -55,7 +55,7 @@ exports.createCheckoutSession = async (req, res) => {
       paymentMethod: "stripe_checkout",
     });
 
-    // ✅ 3. Create Stripe Checkout Session
+    
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -67,7 +67,7 @@ exports.createCheckoutSession = async (req, res) => {
               metadata: {
                 appointmentId,
                 doctorId,
-                paymentId: payment._id.toString(), // ✅ included here too
+                paymentId: payment._id.toString(), 
               },
             },
             // Stripe uses smallest currency unit (e.g., cents)
@@ -78,7 +78,7 @@ exports.createCheckoutSession = async (req, res) => {
       ],
       mode: "payment",
       metadata: {
-        paymentId: payment._id.toString(), // ✅ included here for webhook matching
+        paymentId: payment._id.toString(),
         appointmentId: appointmentId.toString(),
         patientId: patientId.toString(),
         doctorId: doctorId.toString(),

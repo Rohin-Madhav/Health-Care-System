@@ -56,10 +56,16 @@ exports.addDoctor = async (req, res) => {
 };
 exports.getDoctors = async (req, res) => {
   try {
-    const doctors = await User.find({
-      role: "doctor",
-      isApproved: true,
-    }).select("-password");
+    const userRole = req.user.role;
+
+    let filter = { role: "doctor" };
+
+    if (userRole === "patient") {
+      filter.isApproved = true;
+    }
+
+    const doctors = await User.find(filter).select("-password");
+
     res.status(200).json(doctors);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -564,7 +570,6 @@ exports.getOverview = async (req, res) => {
         totalRevenue: item.totalRevenue,
       };
     });
-
     res.status(200).json({
       toatalRevanue,
       totalAppointment,
