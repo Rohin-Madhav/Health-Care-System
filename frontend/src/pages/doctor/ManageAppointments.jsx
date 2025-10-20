@@ -24,7 +24,6 @@ function ManageAppointments() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        
         setAppointments(res.data.appointments || []);
         setTotalPages(res.data.totalPages || 1);
         setTotalItems(res.data.totalItems || 0);
@@ -50,7 +49,6 @@ function ManageAppointments() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Update locally if possible, otherwise refetch
       const updated = res.data.appointment;
       if (updated) {
         setAppointments((prev) =>
@@ -67,11 +65,7 @@ function ManageAppointments() {
 
   const handleCancel = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-
-      await api.delete(`/users/appointment/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/users/appointment/${id}`);
 
       refetch();
       alert("Appointment Canceled Successfully");

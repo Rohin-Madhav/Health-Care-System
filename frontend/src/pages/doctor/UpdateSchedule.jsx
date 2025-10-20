@@ -26,12 +26,10 @@ function UpdateSchedule({ onSaved }) {
   useEffect(() => {
     const loadSchedule = async () => {
       try {
-        const token = localStorage.getItem("token");
+       
         if (!id) throw new Error("No schedule ID in URL");
 
-        const res = await api.get(`/users/doctorSchedule/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get(`/users/doctorSchedule/${id}`);
 
         setScheduleId(res.data._id);
         setForm({

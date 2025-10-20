@@ -20,10 +20,8 @@ function Appointment() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await api.get("/users/doctors", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+       
+        const res = await api.get("/users/doctors");
         setDoctors(res.data || []);
       } catch (err) {
         console.error("Error fetching doctors:", err);

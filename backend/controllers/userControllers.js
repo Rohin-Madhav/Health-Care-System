@@ -28,7 +28,7 @@ exports.approveDoctor = async (req, res) => {
 
 exports.addDoctor = async (req, res) => {
   try {
-    const { username, email, password, role } = req.body;
+    const { username, email, password  } = req.body;
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: "User already exits" });
@@ -84,41 +84,39 @@ exports.getDoctorsById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 exports.updateDoctor = async (req, res) => {
   try {
     const { id } = req.params;
     const { username, email } = req.body;
 
+    // 🔒 SAFETY CHECK
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authorized, missing user" });
+    }
+
     const userRole = req.user.role;
 
-    if (userRole === "doctor") {
-      if (req.user._id.toString() !== id) {
-        return res
-          .status(403)
-          .json({ message: "You can only update your own profile" });
-      }
-    }
-
-    if (userRole === "admin" || userRole === "doctor") {
-      const user = await User.findByIdAndUpdate(
-        id,
-        { username, email },
-        { new: true }
-      ).select("-password");
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
+    // Prevent doctors from editing other doctors
+    if (userRole === "doctor" && req.user._id.toString() !== id) {
       return res
-        .status(200)
-        .json({ message: "User updated successfully", user });
+        .status(403)
+        .json({ message: "You can only update your own profile" });
     }
 
-    return res.status(403).json({ message: "Unauthorized role" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const updatedDoctor = await User.findByIdAndUpdate(
+      id,
+      { username, email },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedDoctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.json(updatedDoctor);
+  } catch (err) {
+    console.error("Update doctor error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 

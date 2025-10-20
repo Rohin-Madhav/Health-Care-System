@@ -44,9 +44,7 @@ function AdminDashboard() {
       setLoading(true)
       try {
         const token = localStorage.getItem("token");
-        const res = await api.get("/users/overview", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/users/overview");
         setOverview(res.data);
       } catch (error) {
         setError("error fetching overviews", error);

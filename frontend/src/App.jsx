@@ -5,7 +5,6 @@ import Layout from "./components/layoutes/layout/Layout";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import AdminLayout from "./components/layoutes/admin/adminLayout";
 import AdminDashboard from "./pages/admin/Admindashboard";
-import AddDoctor from "./pages/admin/manage doctors/AddDoctor";
 import DoctorLayout from "./components/layoutes/doctor/DoctorLayout";
 import Register from "./pages/Register";
 import PatientLogin from "./pages/PatientLogin";
@@ -30,6 +29,7 @@ import ManageDoctors from "./pages/admin/manage doctors/ManageDoctors";
 import Appointments from "./pages/admin/appointments/Appointments";
 import Schedules from "./pages/admin/schedules/Schedules";
 import ViewAllPayments from "./pages/admin/payments/ViewAllPayments";
+import UpdateDoctors from "./pages/admin/manage doctors/UpdateDoctors";
 
 function App() {
   return (
@@ -41,16 +41,17 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
           </Route>
-
+         //region  admin
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="admin-dashboard" element={<AdminDashboard />} />
             <Route path="manage-doctors" element={<ManageDoctors />} />
-            <Route path="addDoctor" element={<AddDoctor />} />
+            <Route path="update-doctor/:id" element={<UpdateDoctors />} />
             <Route path="manage-appointments" element={<Appointments />} />
             <Route path="manage-shedules" element={<Schedules />} />
             <Route path="manage-patients" element={<ManagePatients />} />
             <Route path="view-payments" element={<ViewAllPayments />} />
           </Route>
+          //region  doctor
           <Route path="/doctor" element={<DoctorLayout />}>
             <Route path="doctor-dashboard" element={<DoctorDashboard />} />
             <Route path="view-patients" element={<ViewAllPatients />} />
@@ -59,6 +60,7 @@ function App() {
             <Route path="medicalrecord" element={<AddMedicalRecord />} />
             <Route path="update-shedule/:id" element={<UpdateSchedule />} />
           </Route>
+          //region   patient
           <Route path="/patient" element={<PatientLayout />}>
             <Route path="patient-dashboard" element={<PatientDashboard />} />
             <Route path="book-appointment" element={<Appointment />} />
@@ -71,6 +73,7 @@ function App() {
             <Route path="payment-success" element={<StripePaymentSuccess />} />
             <Route path="payment-cancel" element={<PaymentCancel />} />
           </Route>
+          //region  login
           <Route path="/register" element={<Register />} />
           <Route path="/patientLogin" element={<PatientLogin />} />
           <Route path="/staffLogin" element={<StaffLogin />} />
