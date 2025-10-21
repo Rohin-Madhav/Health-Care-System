@@ -42,6 +42,7 @@ router.get(
   authorizeRoles("admin"),
   userControllers.getAllContacts
 );
+router.delete("/patient/:id",userAuth,authorizeRoles("admin"),userControllers.deletePatient)
 
 //#region doctor,admin
 router.get(
