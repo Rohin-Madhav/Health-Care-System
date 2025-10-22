@@ -11,11 +11,11 @@ function MyPayments() {
       const fetchPayments = async () => {
         try {
           const userId = localStorage.getItem("userId");
-          const token = localStorage.getItem("token");
-          const res = await api.get(`/payment/my/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          
+          const res = await api.get(`/payment/my/${userId}`);
           setPayments(res.data || []);
+          
+          
         } catch (error) {
           console.error("Error fetching payments:", error);
         } finally {
@@ -102,7 +102,7 @@ function MyPayments() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {payment.appointmentId?.doctorId?.username ||
+                        {payment.doctorId.username ||
                           "Doctor Name Unavailable"}
                       </h3>
                       {payment.appointmentId && (

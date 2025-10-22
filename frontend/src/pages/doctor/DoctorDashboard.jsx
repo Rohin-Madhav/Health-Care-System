@@ -26,7 +26,7 @@ export default function DoctorDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
+        
         const doctorId = localStorage.getItem("doctorId");
 
         if (!doctorId) {
@@ -36,18 +36,10 @@ export default function DoctorDashboard() {
         }
 
         const [userRes, aptRes, patientsRes, scheRes] = await Promise.all([
-          api.get(`/users/doctor/${doctorId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          api.get("/users/appointments", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          api.get(`/users/${doctorId}/patients`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          api.get(`/users/doctorSchedules/${doctorId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          api.get(`/users/doctor/${doctorId}`),
+          api.get("/users/appointments"),
+          api.get(`/users/${doctorId}/patients`),
+          api.get(`/users/doctorSchedules`),
         ]);
 
         setDoctorData(userRes.data);

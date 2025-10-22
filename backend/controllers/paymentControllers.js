@@ -19,12 +19,18 @@ exports.paymentSuccess = async (req, res) => {
 
 exports.getMyPayments = async (req, res) => {
   try {
-    const payments = await Payment.find({ patientId: req.user.id });
-    res.json(payments);
+    const payments = await Payment.find({ patientId: req.user.id })
+      .populate("doctorId", "username email") 
+      .populate("appointmentId", "date time") 
+      .sort({ createdAt: -1 }); 
+
+    res.status(200).json(payments);
   } catch (error) {
+    console.error("Error fetching payments:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.getAllPayments = async (req, res) => {
   try {
@@ -53,6 +59,7 @@ exports.createCheckoutSession = async (req, res) => {
       currency: (currency || "usd").toLowerCase(),
       status: "pending",
       paymentMethod: "stripe_checkout",
+      
     });
 
     

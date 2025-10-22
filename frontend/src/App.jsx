@@ -47,7 +47,7 @@ function App() {
             <Route path="manage-doctors" element={<ManageDoctors />} />
             <Route path="update-doctor/:id" element={<UpdateDoctors />} />
             <Route path="manage-appointments" element={<Appointments />} />
-            <Route path="manage-shedules" element={<Schedules />} />
+            <Route path="manage-schedules" element={<Schedules />} />
             <Route path="manage-patients" element={<ManagePatients />} />
             <Route path="view-payments" element={<ViewAllPayments />} />
           </Route>

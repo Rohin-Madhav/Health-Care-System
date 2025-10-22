@@ -18,7 +18,7 @@ function ManagePatients() {
          setLoading(true);
         const res = await api.get("/users/patients");
         setPatientsData(res.data);
-        console.log(res.data);
+       
         
       } catch (error) {
         setError(error.message);

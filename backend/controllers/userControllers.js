@@ -254,7 +254,7 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAllAppointments = async (req, res) => {
   try {
-    const doctorId = req.user._id;
+    const id = req.user._id;
 
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -263,7 +263,7 @@ exports.getAllAppointments = async (req, res) => {
     // filter by doctor for doctor role, admin can see all
     let filter = {};
     if (req.user.role === "doctor") {
-      filter = { doctorId };
+      filter = { doctorId: id };
     } else if (req.user.role === "admin") {
       filter = {};
     } else {
@@ -273,6 +273,7 @@ exports.getAllAppointments = async (req, res) => {
     const [appointments, totalItems] = await Promise.all([
       Appointment.find(filter)
         .populate("patientId", "username email")
+        .populate("doctorId", "username email")
         .sort({ date: 1 })
         .skip(skip)
         .limit(limit),

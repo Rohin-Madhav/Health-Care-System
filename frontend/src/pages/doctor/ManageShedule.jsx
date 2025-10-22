@@ -25,16 +25,7 @@ function ManageShedule() {
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const doctorId = localStorage.getItem("doctorId");
-
-        if (!doctorId) {
-          throw new Error("Doctor ID not found");
-        }
-
-        const res = await api.get(`/users/doctorSchedules/${doctorId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/users/doctorSchedules");
 
         const data = Array.isArray(res.data) ? res.data : res.data.schedule;
         setSchedule(data || []);
@@ -77,9 +68,7 @@ function ManageShedule() {
         },
       };
 
-      const res = await api.post("/users/doctorSchedule", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.post("/users/doctorSchedule", payload);
 
       setSchedule((prev) => [...prev, res.data]);
       setScheduleData({
@@ -188,7 +177,7 @@ function ManageShedule() {
                                 Doctor:
                               </span>
                               <span className="font-semibold text-slate-800">
-                                {s.doctor?.username || "Unknown"}
+                                {s.doctorId?.username || "Unknown"}
                               </span>
                             </div>
 

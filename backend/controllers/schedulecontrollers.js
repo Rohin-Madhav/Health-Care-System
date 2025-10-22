@@ -1,42 +1,37 @@
 const DrSchedule = require("../models/doctorSchedule");
-const User = require("../models/userSchema")
+const User = require("../models/userSchema");
 
-exports.getSchedulesByDoctor = async (req, res) => {
+exports.getAllSchedules = async (req, res) => {
   try {
-    const { doctorId } = req.params;
+    const userRole = req.user.role;
 
-    const schedules = await DrSchedule.find({ doctorId })
-      .populate("doctor", "username email");
-
-    res.status(200).json(schedules);
-  } catch (err) {
-    console.error("Error fetching schedules:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
-exports.getScheduleById = async (req, res) => {
-  try {
-    const { scheduleId } = req.params;
-    const schedule = await DrSchedule.findById(scheduleId)
-      .populate("doctor", "username email");
-
-    if (!schedule) {
-      return res.status(404).json({ message: "Schedule not found" });
+    if (userRole === "admin") {
+      const schedules = await DrSchedule.find().populate(
+        "doctorId",
+        "username email"
+      );
+      return res.status(200).json(schedules);
     }
 
-    res.status(200).json(schedule);
-  } catch (err) {
-    console.error("Error fetching schedule by ID:", err);
-    res.status(500).json({ message: err.message });
+    if (userRole === "doctor") {
+      // Doctors can only see their own schedules
+      const schedules = await DrSchedule.find().populate(
+        "doctorId",
+        "username email"
+      );
+      return res.status(200).json(schedules);
+    }
+
+    res.status(403).send("Unauthorized role.");
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
-
 
 exports.createSchedule = async (req, res) => {
   try {
     const { doctor, date, availableSlots } = req.body;
 
-  
     const doctorUser = await User.findOne({ username: doctor });
     if (!doctorUser) {
       return res.status(404).json({ message: "Doctor not found" });
@@ -72,15 +67,12 @@ exports.updateSchedule = async (req, res) => {
       { new: true }
     );
 
-   
-
     if (!updatedSchedule) {
       return res.status(404).json({ message: "Schedule not found" });
     }
 
     res.status(200).json(updatedSchedule);
   } catch (err) {
-    
     res.status(400).json({ message: err.message });
   }
 };
