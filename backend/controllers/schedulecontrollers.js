@@ -58,12 +58,12 @@ exports.createSchedule = async (req, res) => {
 
 exports.updateSchedule = async (req, res) => {
   try {
-    const { scheduleId } = req.params;
+    const {scheduleId } = req.params;
     const { date, availableSlots } = req.body;
 
     const updatedSchedule = await DrSchedule.findByIdAndUpdate(
       scheduleId,
-      { date, availableSlots }, // overwrite entire array
+      { date, availableSlots },
       { new: true }
     );
 

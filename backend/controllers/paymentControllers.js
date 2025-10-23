@@ -34,7 +34,8 @@ exports.getMyPayments = async (req, res) => {
 
 exports.getAllPayments = async (req, res) => {
   try {
-    const payments = await Payment.find().populate("patientId doctorId");
+    const payments = await Payment.find().populate("doctorId", "username email") 
+      .populate("patientId", "username email") ;
     res.json(payments);
   } catch (error) {
     res.status(500).json({ error: error.message });

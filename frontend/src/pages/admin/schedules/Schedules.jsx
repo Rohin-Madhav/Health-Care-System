@@ -10,17 +10,26 @@ import {
   User,
   AlertCircle,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 function Schedules() {
   const [schedule, setSchedule] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [scheduleData, setScheduleData] = useState({
     doctor: "",
     date: "",
     startTime: "",
     endTime: "",
   });
+  const [editSchedule, setEditSchedule] = useState(null);
+  const [formData, setFormData] = useState({
+    date: "",
+    startTime: "",
+    endTime: "",
+  });
+  const [isModelOpen, setIsModelOpen] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -40,15 +49,6 @@ function Schedules() {
     fetchSchedule();
   }, []);
 
-  useEffect(() => {
-    const doctorName = localStorage.getItem("doctorName");
-    if (doctorName) {
-      setScheduleData((prev) => ({ ...prev, doctor: doctorName }));
-      
-      
-    }
-  }, []);
-
   const handleChange = (e) => {
     setScheduleData({ ...scheduleData, [e.target.name]: e.target.value });
   };
@@ -57,12 +57,9 @@ function Schedules() {
     e.preventDefault();
 
     try {
-      
-     
-
       const payload = {
         doctor: scheduleData.doctor,
-        doctorId,
+
         date: scheduleData.date,
         availableSlots: {
           startTime: scheduleData.startTime,
@@ -92,8 +89,6 @@ function Schedules() {
     }
 
     try {
-      
-
       await api.delete(`/users/doctorSchedul/${scheduleId}`);
 
       setSchedule((prev) => prev.filter((s) => s._id !== scheduleId));
@@ -101,6 +96,47 @@ function Schedules() {
     } catch (error) {
       alert("Failed to Remove");
       console.log(error);
+    }
+  };
+
+  const handleEdit = (schedule) => {
+    setEditSchedule(schedule);
+    setFormData({
+      date: schedule.date?.split("T")[0] || "",
+      startTime: schedule.availableSlots[0]?.startTime || "",
+      endTime: schedule.availableSlots[0]?.endTime || "",
+    });
+    setIsModelOpen(true);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        date: formData.date,
+        availableSlots: [
+          {
+            startTime: formData.startTime,
+            endTime: formData.endTime,
+          },
+        ],
+      };
+
+      const res = await api.patch(
+        `/users/doctorSchedule/${editSchedule._id}`,
+        payload
+      );
+
+      setSchedule((prev) =>
+        prev.map((s) => (s._id === editSchedule._id ? res.data : s))
+      );
+
+      setIsModelOpen(false);
+      setEditSchedule(null);
+      alert("Schedule updated successfully!");
+    } catch (error) {
+      console.error("Error updating schedule:", error);
+      alert("Failed to update schedule: " + error.message);
     }
   };
 
@@ -208,13 +244,13 @@ function Schedules() {
 
                           {/* Action Buttons */}
                           <div className="flex sm:flex-col gap-2">
-                            <Link
-                              to={`/doctor/update-shedule/${s._id}`}
+                            <Button
+                              onClick={() => handleEdit(s)}
                               className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                             >
                               <Edit className="w-4 h-4" />
                               Edit
-                            </Link>
+                            </Button>
                             <button
                               onClick={() => handleRemove(s._id)}
                               className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
@@ -253,7 +289,6 @@ function Schedules() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
                     <div className="flex items-center gap-2">
@@ -265,8 +300,8 @@ function Schedules() {
                     type="text"
                     name="doctor"
                     value={scheduleData.doctor}
-                    
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 text-slate-600 cursor-not-allowed"
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 text-slate-600 "
                   />
                 </div>
 
@@ -348,6 +383,82 @@ function Schedules() {
           </div>
         </div>
       </div>
+      {isModelOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative">
+            <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <Edit className="w-5 h-5 text-blue-600" />
+              Edit Schedule
+            </h3>
+
+            <form onSubmit={handleUpdate} className="space-y-5">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={(e) =>
+                    setFormData({ ...formData, date: e.target.value })
+                  }
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Start Time
+                </label>
+                <input
+                  type="time"
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={(e) =>
+                    setFormData({ ...formData, startTime: e.target.value })
+                  }
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  End Time
+                </label>
+                <input
+                  type="time"
+                  name="endTime"
+                  value={formData.endTime}
+                  onChange={(e) =>
+                    setFormData({ ...formData, endTime: e.target.value })
+                  }
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  onClick={() => setIsModelOpen(false)}
+                  className="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                >
+                  Update
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
