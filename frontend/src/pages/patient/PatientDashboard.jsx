@@ -3,7 +3,6 @@ import { Calendar, DollarSign, Clock, AlertCircle } from "lucide-react";
 import api from "../../services/Api";
 import { useNavigate } from "react-router-dom";
 
-
 export default function PatientDashboard() {
   const [patientData, setPatientData] = useState(null);
   const [appointments, setAppointments] = useState([]);
@@ -15,7 +14,6 @@ export default function PatientDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem("token");
         const userId = localStorage.getItem("userId");
 
         if (!userId) {
@@ -25,22 +23,15 @@ export default function PatientDashboard() {
         }
 
         const [userRes, apptRes, payRes] = await Promise.all([
-          api.get(`/users/patient/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          api.get(`/users/appointments/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          api.get(`/payment/my/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          api.get(`/users/patient/${userId}`),
+          api.get(`/users/appointments/${userId}`),
+          api.get(`/payment/my/${userId}`),
         ]);
 
         setPatientData(userRes.data);
         setAppointments(apptRes.data);
         setPayments(payRes.data);
       } catch (error) {
-        console.error(error);
         setError("Error fetching patient data or appointments");
       } finally {
         setLoading(false);
@@ -53,7 +44,6 @@ export default function PatientDashboard() {
   if (loading) return <p>Loading dashboard...</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
-  // Find the next upcoming appointment
   const upcomingAppointment = appointments.find(
     (a) => new Date(a.date) > new Date() && a.status !== "cancelled"
   );

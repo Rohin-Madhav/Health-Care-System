@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/Api";
 import { Calendar, Clock } from "lucide-react";
+import { toast } from "react-toastify";
 
 function Appointment() {
   const [doctors, setDoctors] = useState([]);
@@ -49,12 +50,13 @@ function Appointment() {
       !form.clientName.trim()
     ) {
       setStatusMsg({ type: "error", text: "Please fill all fields." });
+      toast.error("Please fill all fields.")
       return;
     }
 
     setSubmitting(true);
     try {
-      const token = localStorage.getItem("token");
+     
 
       const payload = {
         doctorId: form.doctorId,
@@ -64,15 +66,14 @@ function Appointment() {
         reason: form.reason,
       };
 
-      const res = await api.post("/users/appointment", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.post("/users/appointment", payload);
 
       setLastAppointment(res.data);
       setStatusMsg({
         type: "success",
         text: "Appointment created successfully. You can pay now.",
       });
+      toast.success("Appointment created successfully. You can pay now.")
       setForm({ doctorId: "", date: "", time: "", clientName: "", reason: "" });
     } catch (err) {
       const msg =
@@ -80,6 +81,7 @@ function Appointment() {
         err.message ||
         "Failed to create appointment.";
       setStatusMsg({ type: "error", text: msg });
+      toast.error("Failed to create appointment.")
     } finally {
       setSubmitting(false);
     }

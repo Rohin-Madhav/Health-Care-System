@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/Api";
+import { toast } from "react-toastify";
 
 function StaffLogin() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ function StaffLogin() {
     try {
       const res = await api.post("/auth/login", { email, password, role });
       const data = res.data;
+      toast.success("Login Success")
 
       console.log("Login response:", data);
 
@@ -33,11 +35,14 @@ function StaffLogin() {
         navigate("/doctor/doctor-dashboard");
       } else {
         setError(`Invalid role selected. Got: ${data?.user?.role}`);
+        toast.error("Invalid role selected.")
       }
     } catch (err) {
       const msg =
         err?.response?.data?.message || err?.message || "Login failed";
+        
       setError(msg);
+      toast.error(msg)
     }
   }
 

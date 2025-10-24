@@ -36,7 +36,7 @@ function ViewAllPayments() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
-          <p className="text-slate-600 font-medium">Loading patients...</p>
+          <p className="text-slate-600 font-medium">Loading Datas...</p>
         </div>
       </div>
     );

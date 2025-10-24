@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import api from "../services/Api";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function PatientLogin() {
   const [email, setEmail] = useState("");
@@ -29,21 +30,22 @@ function PatientLogin() {
         if (response.status === 200) {
           const { token, user } = response.data;
 
-          // ✅ Save token & user info consistently
+         
           localStorage.setItem("token", token);
-          localStorage.setItem("userId", user.id); // 🔑 use userId everywhere
+          localStorage.setItem("userId", user.id);
           localStorage.setItem("username", user.username);
           localStorage.setItem("role", user.role);
 
-          alert("Login successful!");
+          toast.success("Login successful!");
           navigate("/patient/patient-dashboard");
         } else {
           setErrorMessage(
             response.data?.message || "Invalid email or password."
           );
+          toast.error("Invalid email or password.")
         }
       } catch (err) {
-        console.error(err);
+       
         setErrorMessage(
           err.response?.data?.message || "Login failed. Please try again."
         );

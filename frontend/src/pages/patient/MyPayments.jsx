@@ -11,11 +11,8 @@ function MyPayments() {
       const fetchPayments = async () => {
         try {
           const userId = localStorage.getItem("userId");
-          
           const res = await api.get(`/payment/my/${userId}`);
           setPayments(res.data || []);
-          
-          
         } catch (error) {
           console.error("Error fetching payments:", error);
         } finally {
@@ -102,8 +99,7 @@ function MyPayments() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {payment.doctorId.username ||
-                          "Doctor Name Unavailable"}
+                        {payment.doctorId.username || "Doctor Name Unavailable"}
                       </h3>
                       {payment.appointmentId && (
                         <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">

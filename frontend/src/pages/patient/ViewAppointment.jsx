@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect,  useState } from "react";
 import api from "../../services/Api";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function ViewAppointment() {
   const [appointments, setAppointments] = useState([]);
   const [deletingAppointment, setDeletingAppointment] = useState(false);
- 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
+        setLoading(true);
         const userId = localStorage.getItem("userId");
         const response = await api.get(`users/appointments/${userId}`);
         setAppointments(response.data);
       } catch (error) {
-        console.error("Error fetching appointments:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
     fetchAppointments();
@@ -25,22 +31,38 @@ function ViewAppointment() {
     }
     setDeletingAppointment(true);
     try {
-      const token = localStorage.getItem("token");
-      await api.delete(`/users/appointment/${appointmentId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/users/appointment/${appointmentId}`);
       setAppointments((prev) =>
         prev.filter((appt) => appt._id !== appointmentId)
       );
+      toast.success("Appointment Deleted");
     } catch (error) {
-      console.error("Error deleting appointment:", error);
-      alert("Failed to cancel appointment. Please try again.");
+      toast.error("Failed to cancel appointment. Please try again.");
     }
     setDeletingAppointment(false);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
+          <p className="text-slate-600 font-medium">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
-
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md">
+          <XCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
+          <p className="text-rose-600 text-center font-medium">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -82,12 +104,12 @@ function ViewAppointment() {
                   </p>
                 </div>
                 <div>
-              <Link to={`/patient/update-appointment/${appointment._id}`} 
-               className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Edit Appointment
-              </Link>
-                  
-                  
+                  <Link
+                    to={`/patient/update-appointment/${appointment._id}`}
+                    className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    Edit Appointment
+                  </Link>
                 </div>
                 <div className="md:col-span-2">
                   <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import api from '../services/Api'; // Assuming you have an api service
+import { toast } from 'react-toastify';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -20,12 +21,13 @@ function Contact() {
     e.preventDefault();
     setStatus('Sending...');
     try {
-      // This endpoint needs to be created on the backend
       await api.post('/users/contact', formData);
       setStatus('Message sent successfully!');
+      toast.success('Message sent successfully!');
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
       setStatus('Failed to send message. Please try again.');
+      toast.error('Failed to send message. Please try again.');
     }
   };
 

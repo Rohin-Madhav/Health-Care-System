@@ -23,7 +23,7 @@ function PatientLayout() {
                 <Calendar size={20} />
                 <span>Book Appointment</span>
               </Link>
-              <Link to="/patient/medical-records" className="flex items-center space-x-2 hover:text-green-200">
+              <Link to="/patient/view-medical-records" className="flex items-center space-x-2 hover:text-green-200">
                 <FileText size={20} />
                 <span>Medical Records</span>
               </Link>

@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/Api";
+import { toast } from "react-toastify";
 
 function UpdateAppointment() {
   const { id } = useParams();
@@ -58,7 +59,7 @@ function UpdateAppointment() {
     setError(null);
 
     try {
-      const token = localStorage.getItem("token");
+     
 
       const payload = {
         date: new Date(formData.date).toISOString(),
@@ -66,14 +67,12 @@ function UpdateAppointment() {
         reason: formData.reason,
       };
 
-      const response = await api.patch(`/users/appointment/${id}`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      const response = await api.patch(`/users/appointment/${id}`, payload);
+       toast.success("Edited Appointment Successfully")
       navigate("/patient/view-appointment");
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Update failed");
-      console.error(err);
+      toast.error( "Update failed")
     } finally {
       setSaving(false);
     }

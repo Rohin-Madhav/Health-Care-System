@@ -18,10 +18,9 @@ function ManageAppointments() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
+        
         const res = await api.get(
-          `/users/appointments?page=${page}&limit=${limit}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          `/users/appointments?page=${page}&limit=${limit}`
         );
 
         setAppointments(res.data.appointments || []);
@@ -41,13 +40,11 @@ function ManageAppointments() {
 
   const handleStatusUpdate = async (appointmentId, newStatus) => {
     try {
-      const token = localStorage.getItem("token");
+      
 
       const res = await api.patch(
         `/users/status/${appointmentId}`,
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        { status: newStatus }      );
 
       const updated = res.data.appointment;
       if (updated) {

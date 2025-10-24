@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../services/Api";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -23,40 +24,42 @@ export default function Register() {
     setError(null);
     setSuccess(null);
 
-    // Basic client-side validations
+    
     if (!form.username || !form.email || !form.password) {
       setError("Please fill all required fields.");
       return;
     }
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
+       toast.error("Passwords do not match.")
+
       return;
     }
     if (form.password.length < 8) {
       setError("Password must be at least 8 characters.");
+      toast.error("Password must be at least 8 characters.")
       return;
     }
 
     setLoading(true);
     try {
-      // Only send necessary fields. Do NOT include a role property.
+      
       const payload = {
         username: form.username,
         email: form.email,
         password: form.password,
       };
 
-      await api.post("/auth/register", payload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      await api.post("/auth/register", payload);
 
       setSuccess("Registration successful. ");
-      setForm({ username: "", email: "", password: "", confirmPassword: "" });
+      toast.success("Registration successful. ")
       navigate("/patientLogin");
     } catch (err) {
       const msg =
         err.response?.data?.message || err.message || "Registration failed";
       setError(msg);
+      toast.error("Registration failed")
     } finally {
       setLoading(false);
     }
