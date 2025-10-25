@@ -1,5 +1,6 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../../services/Api";
+import { toast } from "react-toastify";
 
 function ManagePatients() {
   const [patientsData, setPatientsData] = useState([]);
@@ -15,15 +16,13 @@ function ManagePatients() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-         setLoading(true);
+        setLoading(true);
         const res = await api.get("/users/patients");
         setPatientsData(res.data);
-       
-        
       } catch (error) {
         setError(error.message);
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -33,6 +32,7 @@ function ManagePatients() {
     try {
       await api.delete(`/users/patient/${id}`);
       setPatientsData(patientsData.filter((p) => p._id !== id));
+      toast.success("Patient Removed");
     } catch (error) {
       setError(error.message);
     }
@@ -54,17 +54,15 @@ function ManagePatients() {
         `/users/patient/${editPatient._id}`,
         formData
       );
-     setPatientsData((prev) =>
-  prev.map((p) =>
-    p._id === editPatient._id ? { ...p, ...res.data } : p
-  )
-);
+      setPatientsData((prev) =>
+        prev.map((p) => (p._id === editPatient._id ? { ...p, ...res.data } : p))
+      );
       setIsModelOpen(false);
       setEditPatient(null);
+      toast.success("Patient Updated");
     } catch (error) {
       setError(error.message);
     }
-    
   };
 
   if (loading) {
@@ -122,9 +120,9 @@ function ManagePatients() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {patientsData.map((p,index) => (
+                {patientsData.map((p, index) => (
                   <tr
-                   key={p?._id || index} 
+                    key={p?._id || index}
                     className="hover:bg-slate-50 transition-colors"
                   >
                     <td className="px-6 py-4">

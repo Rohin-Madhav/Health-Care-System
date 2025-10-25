@@ -12,6 +12,7 @@ import {
   Save,
 } from "lucide-react";
 import api from "../../services/Api";
+import { toast } from "react-toastify";
 
 function AddMedicalRecord() {
   const [patient, setPatient] = useState("");
@@ -45,10 +46,12 @@ function AddMedicalRecord() {
       setDate("");
       setNotes("");
 
-      alert("Medical Record Added Successfully");
+      toast.success("Medical Record Added Successfully");
       navigate("/doctor/view-appointments");
     } catch (error) {
-      alert("Error adding medical record: " + error.message);
+      toast.error("Error adding medical record ");
+      console.log(error.message);
+      
     } finally {
       setLoading(false);
     }

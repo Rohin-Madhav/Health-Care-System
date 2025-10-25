@@ -14,7 +14,7 @@ exports.getAllSchedules = async (req, res) => {
     }
 
     if (userRole === "doctor") {
-      // Doctors can only see their own schedules
+      
       const schedules = await DrSchedule.find().populate(
         "doctorId",
         "username email"
@@ -27,6 +27,18 @@ exports.getAllSchedules = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getScheduleById = async (req, res) => {
+  try {
+    const { scheduleId } = req.params;
+    const schedule = await DrSchedule.findById(scheduleId).populate("doctorId", "username email");
+    if (!schedule) return res.status(404).json({ message: "Schedule not found" });
+    res.status(200).json(schedule);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 
 exports.createSchedule = async (req, res) => {
   try {

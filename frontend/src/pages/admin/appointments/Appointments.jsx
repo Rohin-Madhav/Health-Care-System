@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../services/Api";
 import { XCircle, Calendar, CheckCircle, Trash2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -16,10 +17,8 @@ function Appointments() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
         const res = await api.get(
-          `/users/appointments?page=${page}&limit=${limit}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          `/users/appointments?page=${page}&limit=${limit}`
         );
 
         setAppointments(res.data.appointments || []);
@@ -27,7 +26,6 @@ function Appointments() {
         setTotalItems(res.data.totalItems || 0);
       } catch (err) {
         setError("Error fetching appointments");
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -39,25 +37,21 @@ function Appointments() {
 
   const handleStatusUpdate = async (appointmentId, newStatus) => {
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await api.patch(
-        `/users/status/${appointmentId}`,
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.patch(`/users/status/${appointmentId}`, {
+        status: newStatus,
+      });
 
       const updated = res.data.appointment;
       if (updated) {
         setAppointments((prev) =>
           prev.map((apt) => (apt._id === appointmentId ? updated : apt))
         );
+        toast.success("Appointment Updated");
       } else {
         refetch();
       }
     } catch (err) {
-      alert("Failed to update appointment status.");
-      console.error(err);
+      toast.error("Failed to update appointment status.");
     }
   };
 
@@ -66,10 +60,9 @@ function Appointments() {
       await api.delete(`/users/appointment/${id}`);
 
       refetch();
-      alert("Appointment Canceled Successfully");
+      toast.success("Appointment Canceled Successfully");
     } catch (error) {
-      alert("Failed to cancel");
-      console.log(error);
+      toast.error("Failed to cancel");
     }
   };
 
@@ -192,10 +185,9 @@ function Appointments() {
                           </div>
                         </div>
                       </td>
-                     <td className="px-6 font-bold py-4 whitespace-nowrap text-sm text-slate-600">
-                      Dr. {a.doctorId.username}
-
-                     </td >
+                      <td className="px-6 font-bold py-4 whitespace-nowrap text-sm text-slate-600">
+                        Dr. {a.doctorId.username}
+                      </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                         {new Date(a.date).toLocaleDateString()}
@@ -203,7 +195,7 @@ function Appointments() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                         {a.time}
                       </td>
-                     
+
                       <td className="px-6 py-4 text-sm text-slate-600">
                         {a.reason}
                       </td>

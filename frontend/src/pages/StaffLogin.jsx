@@ -16,15 +16,13 @@ function StaffLogin() {
     try {
       const res = await api.post("/auth/login", { email, password, role });
       const data = res.data;
-      toast.success("Login Success")
-
-      console.log("Login response:", data);
+      toast.success("Login Success");
 
       if (data?.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("doctorId", data.user.id);
         localStorage.setItem("role", data.user.role);
-        localStorage.setItem("doctorName", data.user.username); 
+        localStorage.setItem("doctorName", data.user.username);
       }
 
       const roleNormalized = data?.user?.role?.toLowerCase?.();
@@ -35,14 +33,14 @@ function StaffLogin() {
         navigate("/doctor/doctor-dashboard");
       } else {
         setError(`Invalid role selected. Got: ${data?.user?.role}`);
-        toast.error("Invalid role selected.")
+        toast.error("Invalid role selected.");
       }
     } catch (err) {
       const msg =
         err?.response?.data?.message || err?.message || "Login failed";
-        
+
       setError(msg);
-      toast.error(msg)
+      toast.error(msg);
     }
   }
 

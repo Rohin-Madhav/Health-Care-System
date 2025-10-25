@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { XCircle, Calendar, CheckCircle, Clock, Trash2 } from "lucide-react";
 import api from "../../services/Api";
+import { toast } from "react-toastify";
 
 function ManageAppointments() {
   const [appointments, setAppointments] = useState([]);
@@ -18,7 +19,6 @@ function ManageAppointments() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        
         const res = await api.get(
           `/users/appointments?page=${page}&limit=${limit}`
         );
@@ -40,22 +40,21 @@ function ManageAppointments() {
 
   const handleStatusUpdate = async (appointmentId, newStatus) => {
     try {
-      
-
-      const res = await api.patch(
-        `/users/status/${appointmentId}`,
-        { status: newStatus }      );
+      const res = await api.patch(`/users/status/${appointmentId}`, {
+        status: newStatus,
+      });
 
       const updated = res.data.appointment;
       if (updated) {
         setAppointments((prev) =>
           prev.map((apt) => (apt._id === appointmentId ? updated : apt))
         );
+        toast.success("Appointment Updated");
       } else {
         refetch();
       }
     } catch (err) {
-      alert("Failed to update appointment status.");
+      toast.error("Failed to update appointment status.");
       console.error(err);
     }
   };
@@ -65,9 +64,9 @@ function ManageAppointments() {
       await api.delete(`/users/appointment/${id}`);
 
       refetch();
-      alert("Appointment Canceled Successfully");
+      toast.success("Appointment Canceled ");
     } catch (error) {
-      alert("Failed to cancel");
+      toast.error("Failed to cancel");
       console.log(error);
     }
   };

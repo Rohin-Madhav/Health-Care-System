@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../services/Api";
 import { Link } from "react-router-dom";
-import { XCircle, UserPlus, Edit2, Trash2, CheckCircle, Clock } from "lucide-react";
+import {
+  XCircle,
+  UserPlus,
+  Edit2,
+  Trash2,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
+import { toast } from "react-toastify";
 
 function ManageDoctors() {
   const [doctors, setdoctors] = useState([]);
@@ -43,7 +51,7 @@ function ManageDoctors() {
   const handleDelete = async (id) => {
     try {
       await api.delete(`/users/deleteDoctor/${id}`);
-      alert("Doctor Deleted");
+      toast.success("Doctor Deleted");
     } catch (error) {
       setError(error.message);
     }
@@ -56,9 +64,10 @@ function ManageDoctors() {
       setForm(res.data);
       console.log(res.data);
 
-      alert("New Doctor Added");
+      toast.success("New Doctor Added");
     } catch (error) {
       setError(error.message);
+      toast.error("Failed to add doctor");
     }
   };
 
@@ -90,7 +99,9 @@ function ManageDoctors() {
         {/* Doctors Table Section */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-gradient-to-r from-teal-600 to-cyan-600 px-8 py-6">
-            <h1 className="text-3xl font-bold text-white">Manage All Doctors</h1>
+            <h1 className="text-3xl font-bold text-white">
+              Manage All Doctors
+            </h1>
             <p className="text-teal-50 mt-1">View and manage doctor accounts</p>
           </div>
 
@@ -98,22 +109,37 @@ function ManageDoctors() {
             <table className="w-full">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Doctor</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Email</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Created</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Status</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
+                    Doctor
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
+                    Email
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
+                    Created
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {doctors.map((d) => (
-                  <tr key={d._id} className="hover:bg-slate-50 transition-colors">
+                  <tr
+                    key={d._id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white font-semibold">
                           {d.username.charAt(0).toUpperCase()}
                         </div>
-                        <span className="ml-3 font-medium text-slate-900">{d.username}</span>
+                        <span className="ml-3 font-medium text-slate-900">
+                          {d.username}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-slate-600">{d.email}</td>
@@ -168,7 +194,9 @@ function ManageDoctors() {
             <div className="flex items-center">
               <UserPlus className="w-8 h-8 text-white mr-3" />
               <div>
-                <h2 className="text-3xl font-bold text-white">Add New Doctor</h2>
+                <h2 className="text-3xl font-bold text-white">
+                  Add New Doctor
+                </h2>
                 <p className="text-cyan-50 mt-1">Create a new doctor account</p>
               </div>
             </div>
@@ -177,14 +205,19 @@ function ManageDoctors() {
           <form onSubmit={handleSubmit} className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label htmlFor="username" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Username
                 </label>
                 <input
                   type="text"
                   id="username"
                   value={form.username}
-                  onChange={(e) => setForm({ ...form, username: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, username: e.target.value })
+                  }
                   className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                   placeholder="Enter username"
                   required
@@ -192,7 +225,10 @@ function ManageDoctors() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Email Address
                 </label>
                 <input
@@ -208,7 +244,10 @@ function ManageDoctors() {
             </div>
 
             <div className="mb-6">
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-slate-700 mb-2"
+              >
                 Password
               </label>
               <input

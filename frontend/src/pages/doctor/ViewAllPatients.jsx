@@ -11,11 +11,9 @@ function ViewAllPatients() {
   useEffect(() => {
     const fetchAllMyPatients = async () => {
       try {
-        const token = localStorage.getItem("token");
+        
         const doctorId = localStorage.getItem("doctorId");
-        const res = await api.get(`/users/${doctorId}/patients`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get(`/users/${doctorId}/patients`);
         setPatients(res.data);
       } catch (error) {
         setError("Failed to load patients");

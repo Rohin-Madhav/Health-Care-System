@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   CheckCircle,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 function UpdateSchedule({ onSaved }) {
   const { id } = useParams();
@@ -26,11 +27,8 @@ function UpdateSchedule({ onSaved }) {
   useEffect(() => {
     const loadSchedule = async () => {
       try {
-       
         if (!id) throw new Error("No schedule ID in URL");
-
         const res = await api.get(`/users/doctorSchedule/${id}`);
-
         setScheduleId(res.data._id);
         setForm({
           date: res.data.date?.slice(0, 10) || "",
@@ -52,7 +50,6 @@ function UpdateSchedule({ onSaved }) {
     setErr(null);
 
     try {
-      const token = localStorage.getItem("token");
       if (!scheduleId) throw new Error("No schedule found to update");
 
       const payload = {
@@ -64,20 +61,16 @@ function UpdateSchedule({ onSaved }) {
           },
         ],
       };
-
       const res = await api.patch(
         `/users/doctorSchedule/${scheduleId}`,
-        payload,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        payload
       );
-
-      alert("Schedule updated successfully!");
+      toast.success("Schedule updated successfully!");
       onSaved?.(res.data);
       navigate("/doctor/schedule");
     } catch (err) {
       setErr(err.message);
+      toast.error("Updating Failed");
     } finally {
       setSaving(false);
     }

@@ -10,6 +10,7 @@ import {
   User,
   AlertCircle,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 function ManageShedule() {
   const [schedule, setSchedule] = useState([]);
@@ -55,7 +56,6 @@ function ManageShedule() {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem("token");
       const doctorId = localStorage.getItem("doctorId");
 
       const payload = {
@@ -71,16 +71,17 @@ function ManageShedule() {
       const res = await api.post("/users/doctorSchedule", payload);
 
       setSchedule((prev) => [...prev, res.data]);
+      toast.success();
       setScheduleData({
         doctor: scheduleData.doctor,
         date: "",
         startTime: "",
         endTime: "",
       });
-      alert("Schedule created successfully!");
+      toast.success("Schedule created successfully!");
     } catch (err) {
       console.error("Error creating schedule:", err);
-      alert("Failed to add schedule: " + err.message);
+      toast.error("Failed to add schedule");
     }
   };
 
@@ -90,16 +91,12 @@ function ManageShedule() {
     }
 
     try {
-      const token = localStorage.getItem("token");
-
-      await api.delete(`/users/doctorSchedul/${scheduleId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/users/doctorSchedul/${scheduleId}`);
 
       setSchedule((prev) => prev.filter((s) => s._id !== scheduleId));
-      alert("Schedule Removed Successfully!");
+      toast.success("Schedule Removed ");
     } catch (error) {
-      alert("Failed to Remove");
+      toast.error("Failed to Remove");
       console.log(error);
     }
   };

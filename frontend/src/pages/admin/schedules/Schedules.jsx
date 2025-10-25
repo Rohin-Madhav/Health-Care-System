@@ -11,6 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
 
 function Schedules() {
   const [schedule, setSchedule] = useState([]);
@@ -39,7 +40,6 @@ function Schedules() {
         const data = Array.isArray(res.data) ? res.data : res.data.schedule;
         setSchedule(data || []);
       } catch (err) {
-        console.error("Error fetching schedule:", err);
         setError(err);
       } finally {
         setLoading(false);
@@ -76,10 +76,9 @@ function Schedules() {
         startTime: "",
         endTime: "",
       });
-      alert("Schedule created successfully!");
+      toast.success("Schedule created successfully!");
     } catch (err) {
-      console.error("Error creating schedule:", err);
-      alert("Failed to add schedule: " + err.message);
+      toast.error("Failed to add schedule");
     }
   };
 
@@ -92,10 +91,9 @@ function Schedules() {
       await api.delete(`/users/doctorSchedul/${scheduleId}`);
 
       setSchedule((prev) => prev.filter((s) => s._id !== scheduleId));
-      alert("Schedule Removed Successfully!");
+      toast.success("Schedule Removed !");
     } catch (error) {
-      alert("Failed to Remove");
-      console.log(error);
+      toast.error("Failed to Remove");
     }
   };
 
@@ -133,10 +131,9 @@ function Schedules() {
 
       setIsModelOpen(false);
       setEditSchedule(null);
-      alert("Schedule updated successfully!");
+      toast.success("Schedule updated successfully!");
     } catch (error) {
-      console.error("Error updating schedule:", error);
-      alert("Failed to update schedule: " + error.message);
+      toast.error("Failed to update schedule ");
     }
   };
 

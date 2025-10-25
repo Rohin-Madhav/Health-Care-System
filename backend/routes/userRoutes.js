@@ -155,6 +155,12 @@ router.get(
   authorizeRoles("admin", "patient", "doctor"),
   scheduleControllers.getAllSchedules
 );
+router.get(
+  "/doctorSchedule/:scheduleId",
+  userAuth,
+  authorizeRoles("admin", "doctor"),
+  scheduleControllers.getScheduleById
+);
 
 //#region medical record routes
 router.get(
