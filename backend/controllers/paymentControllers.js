@@ -20,22 +20,27 @@ exports.paymentSuccess = async (req, res) => {
 exports.getMyPayments = async (req, res) => {
   try {
     const payments = await Payment.find({ patientId: req.user.id })
-      .populate("doctorId", "username email") 
-      .populate("appointmentId", "date time") 
-      .sort({ createdAt: -1 }); 
+      .populate("doctorId", "username email")
+      .populate("appointmentId", "date time")
+      .sort({ createdAt: -1 });
 
-    res.status(200).json(payments);
+    const formattedPayments = payments.map((p) => ({
+      ...p.toObject(),
+      doctor: p.doctorId,
+      appointment: p.appointmentId,
+    }));
+    res.status(200).json(formattedPayments);
   } catch (error) {
     console.error("Error fetching payments:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
-
 exports.getAllPayments = async (req, res) => {
   try {
-    const payments = await Payment.find().populate("doctorId", "username email") 
-      .populate("patientId", "username email") ;
+    const payments = await Payment.find()
+      .populate("doctorId", "username email")
+      .populate("patientId", "username email");
     res.json(payments);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,12 +51,10 @@ exports.createCheckoutSession = async (req, res) => {
     const { appointmentId, doctorId, amount, currency } = req.body;
     const patientId = req.user._id;
 
-   
     if (!appointmentId || !doctorId || !amount) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    
     const payment = await Payment.create({
       appointmentId,
       patientId,
@@ -60,10 +63,8 @@ exports.createCheckoutSession = async (req, res) => {
       currency: (currency || "usd").toLowerCase(),
       status: "pending",
       paymentMethod: "stripe_checkout",
-      
     });
 
-    
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -75,7 +76,7 @@ exports.createCheckoutSession = async (req, res) => {
               metadata: {
                 appointmentId,
                 doctorId,
-                paymentId: payment._id.toString(), 
+                paymentId: payment._id.toString(),
               },
             },
             // Stripe uses smallest currency unit (e.g., cents)
@@ -104,7 +105,6 @@ exports.createCheckoutSession = async (req, res) => {
       checkoutUrl: session.url,
       paymentId: payment._id,
     });
-
   } catch (error) {
     console.error("❌ createCheckoutSession error:", error);
     return res.status(500).json({ message: error.message });
