@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { XCircle } from "lucide-react";
 import {
   Sidebar,
   SidebarProvider,
@@ -43,9 +44,11 @@ function AdminDashboard() {
     const fetchOverview = async () => {
       setLoading(true)
       try {
-        const token = localStorage.getItem("token");
+      
         const res = await api.get("/users/overview");
-        setOverview(res.data);
+        setOverview(res.data);      
+      console.log();
+           
       } catch (error) {
         setError("error fetching overviews", error);
       } finally {
