@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Layout from "./components/layoutes/layout/Layout";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import AdminLayout from "./components/layoutes/admin/AdminLayout";
-import AdminDashboard from "./pages/admin/Admindashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import DoctorLayout from "./components/layoutes/doctor/DoctorLayout";
 import Register from "./pages/Register";
 import PatientLogin from "./pages/PatientLogin";
