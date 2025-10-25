@@ -68,24 +68,20 @@ const allowedOrigins = [
   "https://health-care-system-1-yzp8.onrender.com",
 ];
 
-app.use((req, res, next) => {
- 
-  if (req.originalUrl === "/api/payment/webhook") {
-    next();
-  } else {
-    cors({
-      origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
-      },
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-      credentials: true,
-    })(req, res, next);
-  }
-});
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 app.use("/api/auth", healthCareRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/uploads", uploadRoutes);
