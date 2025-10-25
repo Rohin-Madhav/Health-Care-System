@@ -21,16 +21,16 @@ import StripePaymentSuccess from "./pages/patient/PaymentSuccess";
 import UpdateAppointment from "./pages/patient/UpdateAppointment";
 import ViewAllPatients from "./pages/doctor/ViewAllPatients";
 import ManageAppointments from "./pages/doctor/ManageAppointments";
-import ManageShedule from "./pages/doctor/ManageShedule";
+import ManageSchedule from "./pages/doctor/ManageSchedule";
 import AddMedicalRecord from "./pages/doctor/AddMedicalRecord";
 import UpdateSchedule from "./pages/doctor/UpdateSchedule";
-import ManagePatients from "./pages/admin/manage patients/ManagePatients";
-import ManageDoctors from "./pages/admin/manage doctors/ManageDoctors";
+import ManagePatients from "./pages/admin/manage-patients/ManagePatients";
+import ManageDoctors from "./pages/admin/manage-doctors/ManageDoctors";
 import Appointments from "./pages/admin/appointments/Appointments";
 import Schedules from "./pages/admin/schedules/Schedules";
 import ViewAllPayments from "./pages/admin/payments/ViewAllPayments";
-import UpdateDoctors from "./pages/admin/manage doctors/UpdateDoctors";
-import GetMedicalRecord from "./pages/patient/getMedicalRecord";
+import UpdateDoctors from "./pages/admin/manage-doctors/UpdateDoctors";
+import GetMedicalRecord from "./pages/patient/GetMedicalRecord";
 
 function App() {
   return (
@@ -57,7 +57,7 @@ function App() {
             <Route path="doctor-dashboard" element={<DoctorDashboard />} />
             <Route path="view-patients" element={<ViewAllPatients />} />
             <Route path="view-appointments" element={<ManageAppointments />} />
-            <Route path="schedule" element={<ManageShedule />} />
+            <Route path="schedule" element={<ManageSchedule />} />
             <Route path="medicalrecord" element={<AddMedicalRecord />} />
             <Route path="update-shedule/:id" element={<UpdateSchedule />} />
           </Route>

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 
-function ManageShedule() {
+function ManageSchedule() {
   const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -349,4 +349,4 @@ function ManageShedule() {
   );
 }
 
-export default ManageShedule;
+export default ManageSchedule;
