@@ -109,7 +109,7 @@ function ViewAllPayments() {
                       {p.doctorId?.username || "Unknown Doctor"}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                      ₹{p.amount}
+                      ${p.amount}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
                       <span
@@ -141,7 +141,7 @@ function ViewAllPayments() {
                     colSpan="2"
                     className="px-4 py-4 text-sm font-bold text-yellow-600"
                   >
-                    ₹{totalPending.toFixed(2)}
+                    ${totalPending.toFixed(2)}
                   </td>
                 </tr>
                 <tr className="hover:bg-gray-100 transition-colors">
@@ -155,7 +155,7 @@ function ViewAllPayments() {
                     colSpan="2"
                     className="px-4 py-4 text-sm font-bold text-red-600"
                   >
-                    ₹{totalFailed.toFixed(2)}
+                    ${totalFailed.toFixed(2)}
                   </td>
                 </tr>
                 <tr className="hover:bg-gray-100 transition-colors bg-green-50">
@@ -169,7 +169,7 @@ function ViewAllPayments() {
                     colSpan="2"
                     className="px-4 py-4 text-sm font-bold text-green-600"
                   >
-                    ₹{totaSuccess.toFixed(2)}
+                    ${totaSuccess.toFixed(2)}
                   </td>
                 </tr>
               </tfoot>

@@ -38,7 +38,8 @@ function ManageDoctors() {
     fetchdata();
   }, []);
 
-  const handleApprove = async (id) => {
+  const handleApprove = async (id, e) => {
+    e.preventDefault();
     try {
       await api.patch(`/users/approveDoctor/${id}`);
     } catch (err) {
@@ -48,7 +49,8 @@ function ManageDoctors() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, e) => {
+    e.preventDefault();
     try {
       await api.delete(`/users/deleteDoctor/${id}`);
       toast.success("Doctor Deleted");
@@ -62,7 +64,6 @@ function ManageDoctors() {
     try {
       const res = await api.post("/users/doctor", form);
       setForm(res.data);
-      console.log(res.data);
 
       toast.success("New Doctor Added");
     } catch (error) {

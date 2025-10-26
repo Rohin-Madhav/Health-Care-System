@@ -28,7 +28,8 @@ function ManagePatients() {
     fetchData();
   }, []);
 
-  const handleRemove = async (id) => {
+  const handleRemove = async (id, e) => {
+    e.preventDefault();
     try {
       await api.delete(`/users/patient/${id}`);
       setPatientsData(patientsData.filter((p) => p._id !== id));
@@ -48,7 +49,8 @@ function ManagePatients() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     try {
       const res = await api.patch(
         `/users/patient/${editPatient._id}`,

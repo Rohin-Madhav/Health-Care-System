@@ -35,7 +35,8 @@ function Appointments() {
 
   const refetch = () => setRefreshToggle((s) => !s);
 
-  const handleStatusUpdate = async (appointmentId, newStatus) => {
+  const handleStatusUpdate = async (appointmentId, newStatus, e) => {
+    e.preventDefault();
     try {
       const res = await api.patch(`/users/status/${appointmentId}`, {
         status: newStatus,
