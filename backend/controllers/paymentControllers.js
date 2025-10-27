@@ -96,11 +96,9 @@ exports.createCheckoutSession = async (req, res) => {
       cancel_url: `${process.env.FRONTEND_URL}/patient/payment-cancel`,
     });
 
-    // ✅ 4. Save session ID to the payment record
     payment.sessionId = session.id;
     await payment.save();
 
-    // ✅ 5. Respond with the checkout URL and paymentId
     return res.status(200).json({
       checkoutUrl: session.url,
       paymentId: payment._id,

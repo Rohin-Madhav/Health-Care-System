@@ -80,9 +80,11 @@ const Navbar = () => {
                  Contact
                </span>
              </Link>
-              <button className="w-full bg-blue-600 text-white px-6 py-2 rounded-full">
-                Sign In
-              </button>
+              <Link to={"/patientLogin"} >
+               <span className=" text-white hover:text-black  bg-blue-600 text-white px-6 py-2 rounded-full" >
+                Sign in
+               </span>
+              </Link>
             </div>
           </div>
         )}
