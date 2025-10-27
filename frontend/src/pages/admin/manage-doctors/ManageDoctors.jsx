@@ -38,8 +38,7 @@ function ManageDoctors() {
     fetchdata();
   }, []);
 
-  const handleApprove = async (id, e) => {
-    e.preventDefault();
+  const handleApprove = async (id) => {
     try {
       await api.patch(`/users/approveDoctor/${id}`);
     } catch (err) {
@@ -49,8 +48,7 @@ function ManageDoctors() {
     }
   };
 
-  const handleDelete = async (id, e) => {
-    e.preventDefault();
+  const handleDelete = async (id) => {
     try {
       await api.delete(`/users/deleteDoctor/${id}`);
       toast.success("Doctor Deleted");

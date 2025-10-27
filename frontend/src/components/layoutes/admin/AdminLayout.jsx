@@ -15,7 +15,7 @@ function AdminLayout() {
           <div className="flex justify-around items-center h-16">
             <div className="flex items-center space-x-2">
               <Settings className="w-8 h-8" />
-              <span className="text-2xl  font-bold">Admin Panel</span>
+              <Link to={"/admin/admin-dashboard"} className="text-2xl  font-bold">Admin Panel</Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">

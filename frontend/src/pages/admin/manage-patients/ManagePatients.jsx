@@ -28,8 +28,7 @@ function ManagePatients() {
     fetchData();
   }, []);
 
-  const handleRemove = async (id, e) => {
-    e.preventDefault();
+  const handleRemove = async (id) => {
     try {
       await api.delete(`/users/patient/${id}`);
       setPatientsData(patientsData.filter((p) => p._id !== id));
