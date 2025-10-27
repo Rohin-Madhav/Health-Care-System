@@ -23,44 +23,64 @@ app.post(
   async (req, res) => {
     const sig = req.headers["stripe-signature"];
     let event;
-    console.log("webhook trogerd");
+    console.log("✅ Stripe webhook triggered");
 
     try {
-      // req.body is already a Buffer when using express.raw()
       event = stripe.webhooks.constructEvent(
         req.body,
         sig,
         process.env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
-      console.error("⚠️  Webhook signature verification failed.", err.message);
+      console.error("⚠️  Webhook signature verification failed:", err.message);
       return res.sendStatus(400);
     }
 
-    // Handle the event
-    switch (event.type) {
-      case "payment_intent.succeeded":
-        const paymentIntent = event.data.object;
-        console.log(
-          `✅ PaymentIntent for ${paymentIntent.amount} was successful!`
-        );
-        break;
-      case "checkout.session.completed":
-        const session = event.data.object;
+    try {
+      switch (event.type) {
+        case "payment_intent.succeeded": {
+          const paymentIntent = event.data.object;
+          console.log(`💰 PaymentIntent ${paymentIntent.id} succeeded.`);
+          break;
+        }
 
-        const payment = await Payment.findById(session.metadata.paymentId);
-        payment.status = "success";
-        payment.save();
-        const amount = paymentIntent.amount / 100;
-        console.log(`✅ PaymentIntent for $${amount} was successful!`);
-        break;
-      default:
-        console.log(`Unhandled event type ${event.type}`);
+        case "checkout.session.completed": {
+          const session = event.data.object;
+          console.log(`🧾 Checkout session completed: ${session.id}`);
+
+        
+          const paymentId = session.metadata?.paymentId;
+          if (!paymentId) {
+            console.error("❌ No paymentId in session metadata");
+            break;
+          }
+
+          const payment = await Payment.findById(paymentId);
+          if (!payment) {
+            console.error("❌ Payment record not found in DB:", paymentId);
+            break;
+          }
+
+          payment.status = "success";
+          payment.transactionId = session.payment_intent;
+          await payment.save();
+
+          console.log(`✅ Payment ${paymentId} marked as SUCCESS`);
+          break;
+        }
+
+        default:
+          console.log(`Unhandled event type ${event.type}`);
+      }
+
+      res.json({ received: true });
+    } catch (error) {
+      console.error("🔥 Webhook handler error:", error);
+      res.status(500).json({ error: "Webhook handler failed" });
     }
-
-    res.json({ received: true });
   }
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
@@ -77,7 +97,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
