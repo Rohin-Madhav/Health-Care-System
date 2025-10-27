@@ -1,6 +1,12 @@
 const stripe = require("../utils/stripe");
 const Payment = require("../models/payment");
 
+const FRONTEND_URL =
+  process.env.FRONTEND_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "https://health-care-system-1-yzp8.onrender.com"
+    : "http://localhost:5173");
+
 exports.paymentSuccess = async (req, res) => {
   try {
     const { paymentId, transactionId } = req.body;
@@ -92,8 +98,8 @@ exports.createCheckoutSession = async (req, res) => {
         patientId: patientId.toString(),
         doctorId: doctorId.toString(),
       },
-      success_url: `${process.env.FRONTEND_URL}/patient/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/patient/payment-cancel`,
+      success_url: `${FRONTEND_URL}/patient/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${FRONTEND_URL}/patient/payment-cancel`,
     });
 
     payment.sessionId = session.id;
