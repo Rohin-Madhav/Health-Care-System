@@ -24,7 +24,6 @@ function GetMedicalRecord({ userId }) {
         setLoading(true);
         const res = await api.get(`/users/medicalRecord/${id}`);
         setMedicalRecord(res.data);
-        console.log(res.data);
       } catch (error) {
         setError(error.message);
       } finally {

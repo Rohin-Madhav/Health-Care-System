@@ -67,7 +67,6 @@ function ManageAppointments() {
       toast.success("Appointment Canceled ");
     } catch (error) {
       toast.error("Failed to cancel");
-      console.log(error);
     }
   };
 

@@ -97,7 +97,6 @@ function ManageSchedule() {
       toast.success("Schedule Removed ");
     } catch (error) {
       toast.error("Failed to Remove");
-      console.log(error);
     }
   };
 

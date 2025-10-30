@@ -47,10 +47,9 @@ function AddMedicalRecord() {
       setNotes("");
 
       toast.success("Medical Record Added Successfully");
-      navigate("/doctor/view-appointments");
+      navigate("/doctor/doctor-dashboard");
     } catch (error) {
       toast.error("Error adding medical record ");
-      console.log(error.message);
       
     } finally {
       setLoading(false);
