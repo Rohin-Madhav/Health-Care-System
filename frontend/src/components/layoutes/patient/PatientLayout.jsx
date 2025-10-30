@@ -74,7 +74,7 @@ function PatientLayout() {
                 Book Appointment
               </Link>
               <Link
-                to="/patient/medical-records"
+                to="/patient/view-medical-records"
                 className="block py-2 hover:text-green-200"
               >
                 Medical Records
