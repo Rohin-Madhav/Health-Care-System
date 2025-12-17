@@ -26,8 +26,7 @@ export default function DoctorDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
-        const doctorId = localStorage.getItem("doctorId");
+  const doctorId = localStorage.getItem("doctorId");
 
         if (!doctorId) {
           setError("No Doctor ID found. Please log in again.");

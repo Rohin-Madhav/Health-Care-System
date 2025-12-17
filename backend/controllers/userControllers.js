@@ -28,7 +28,7 @@ exports.approveDoctor = async (req, res) => {
 
 exports.addDoctor = async (req, res) => {
   try {
-    const { username, email, password  } = req.body;
+    const { username, email, password } = req.body;
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: "User already exits" });
@@ -75,13 +75,31 @@ exports.getDoctors = async (req, res) => {
 exports.getDoctorsById = async (req, res) => {
   try {
     const { doctorId } = req.params;
+
+    // Validate param
+    if (!doctorId) {
+      return res.status(400).json({ message: "Missing doctorId parameter" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      return res.status(400).json({ message: "Invalid doctorId format" });
+    }
+
+    // Fetch doctor
     const user = await User.findById(doctorId).select("-password");
-    if (!user || user.role !== "doctor") {
+
+    if (!user) {
       return res.status(404).json({ message: "Doctor not found" });
     }
+
+    if (user.role !== "doctor") {
+      return res.status(403).json({ message: "User is not a doctor" });
+    }
+
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error in getDoctorsById:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 exports.updateDoctor = async (req, res) => {
@@ -151,9 +169,9 @@ exports.getPatientById = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
+
   }
 };
-
 exports.getPatientsByDoctor = async (req, res) => {
   try {
     const doctorId = req.params.doctorId;
@@ -166,17 +184,21 @@ exports.getPatientsByDoctor = async (req, res) => {
       return res.status(200).json([]);
     }
 
-    const patients = appointments.map((a) => a.patientId);
+    // 🧠 Add this line to skip nulls
+    const patients = appointments.map(a => a.patientId).filter(p => p && p._id);
 
     const uniquePatients = [
-      ...new Map(patients.map((p) => [p._id.toString(), p])).values(),
+      ...new Map(patients.map(p => [p._id.toString(), p])).values(),
     ];
 
     res.status(200).json(uniquePatients);
   } catch (err) {
+    console.error("Error in getPatientsByDoctor:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
 
 exports.updatePatient = async (req, res) => {
   try {
@@ -226,7 +248,6 @@ exports.deletePatient = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 exports.createAppointment = async (req, res) => {
   try {
