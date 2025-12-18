@@ -56,6 +56,7 @@ router.get(
   authorizeRoles("admin", "doctor", "patient"),
   userControllers.getPatientById
 );
+router.get("/users/doctor/me", userAuth, authorizeRoles("doctor"), userControllers.getDoctorMe);
 router.get(
   "/doctor/:doctorId",
   userAuth,
@@ -69,11 +70,12 @@ router.patch(
   userControllers.updateDoctor
 );
 router.get(
-  "/doctor/:doctorId/patients",
+  "/doctor/me/patients",
   userAuth,
-  authorizeRoles("doctor", "admin"),
+  authorizeRoles("doctor"),
   userControllers.getPatientsByDoctor
 );
+
 
 router.get(
   "/appointments",

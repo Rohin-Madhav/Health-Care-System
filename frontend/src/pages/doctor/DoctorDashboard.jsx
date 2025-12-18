@@ -26,22 +26,17 @@ export default function DoctorDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-  const doctorId = localStorage.getItem("doctorId");
 
-        if (!doctorId) {
-          setError("No Doctor ID found. Please log in again.");
-          setLoading(false);
-          return;
-        }
+        const doctorRes = await api.get("/users/doctor/me");
+        setDoctorData(doctorRes.data);
 
         const [userRes, aptRes, patientsRes, scheRes] = await Promise.all([
-          api.get(`/users/doctor/${doctorId}`),
           api.get("/users/appointments"),
-          api.get(`/users/${doctorId}/patients`),
+          api.get("/users/doctor/me/patients"),
           api.get(`/users/doctorSchedules`),
         ]);
 
-        setDoctorData(userRes.data);
+
         setAppointments(aptRes.data.appointments || []);
         setPatients(patientsRes.data);
         setSchedules(scheRes.data || []);
@@ -328,7 +323,7 @@ export default function DoctorDashboard() {
                     </div>
 
                     {Array.isArray(s.availableSlots) &&
-                    s.availableSlots.length > 0 ? (
+                      s.availableSlots.length > 0 ? (
                       <div className="space-y-1">
                         {s.availableSlots.map((slot, idx) => (
                           <div

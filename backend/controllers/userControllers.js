@@ -3,6 +3,7 @@ const Appointment = require("../models/appointment");
 const MedicalRecord = require("../models/medicaleRecord");
 const Contact = require("../models/contact");
 const Payment = require("../models/payment");
+const mongoose = require("mongoose");
 
 exports.approveDoctor = async (req, res) => {
   try {
@@ -100,6 +101,21 @@ exports.getDoctorsById = async (req, res) => {
   } catch (error) {
     console.error("Error in getDoctorsById:", error);
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.getDoctorMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+
+    if (!user || user.role !== "doctor") {
+      return res.status(403).json({ message: "Not a doctor" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("getDoctorMe error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 exports.updateDoctor = async (req, res) => {
@@ -239,15 +255,26 @@ exports.updatePatient = async (req, res) => {
 exports.deletePatient = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // 1️⃣ Delete patient user
     const user = await User.findByIdAndDelete(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ message: "User deleted successfully" });
+
+    // 2️⃣ 🔥 CLEAN ALL REFERENCES (THIS IS THE FIX)
+    await Appointment.deleteMany({ patientId: id });
+    await MedicalRecord.deleteMany({ patient: id });
+
+    res.status(200).json({
+      message: "Patient and related data deleted successfully",
+    });
   } catch (error) {
+    console.error("Delete patient error:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 exports.createAppointment = async (req, res) => {
   try {
