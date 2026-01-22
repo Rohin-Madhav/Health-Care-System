@@ -20,6 +20,7 @@ const Navbar = () => {
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
+              
               <a
                 href="#services"
                 className="text-gray-700 hover:text-blue-600 transition"
@@ -62,29 +63,33 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t">
-            <div className="px-4 py-4 space-y-3">
+          <div className="md:hidden bg-gradient-to-b from-white to-gray-50 border-t border-gray-200 shadow-lg">
+            <div className="px-6 py-6 space-y-1">
+              
               <a
                 href="#services"
-                className="block text-gray-700 hover:text-blue-600"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 py-3 px-4 rounded-lg transition-all duration-200 font-medium"
               >
                 Services
               </a>
-          <Link to="/about">
-            <span className="block text-gray-700 hover:text-blue-600">
-              About
-            </span>
-          </Link>
-             <Link to="/contact">
-               <span className="block text-gray-700 hover:text-blue-600">
-                 Contact
-               </span>
-             </Link>
-              <Link to={"/patientLogin"} >
-               <span className=" text-white hover:text-black  bg-blue-600 text-white px-6 py-2 rounded-full" >
-                Sign in
-               </span>
+              <Link to="/about" onClick={() => setMobileMenuOpen(false)}>
+                <span className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 py-3 px-4 rounded-lg transition-all duration-200 font-medium">
+                  About
+                </span>
               </Link>
+              <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
+                <span className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 py-3 px-4 rounded-lg transition-all duration-200 font-medium">
+                  Contact
+                </span>
+              </Link>
+              <div className="pt-4 pb-2">
+                <Link to="/patientLogin" onClick={() => setMobileMenuOpen(false)}>
+                  <span className="block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-200 text-center font-semibold shadow-md hover:shadow-lg">
+                    Sign In
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
         )}
