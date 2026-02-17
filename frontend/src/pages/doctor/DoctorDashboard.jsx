@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   Calendar,
@@ -15,6 +15,7 @@ import {
 import api from "../../services/Api";
 
 export default function DoctorDashboard() {
+  const doctorId = useParams()
   const [doctorData, setDoctorData] = useState({});
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
@@ -40,7 +41,7 @@ export default function DoctorDashboard() {
 
         const [aptRes, patientsRes, scheRes] = await Promise.all([
           api.get("/users/appointments"),
-          api.get("/users/doctor/me/patients"),
+          api.get(`/users/doctor/${doctorId}/patients`),
           api.get(`/users/doctorSchedules`),
         ]);
         setAppointments(aptRes.data.appointments || []);
