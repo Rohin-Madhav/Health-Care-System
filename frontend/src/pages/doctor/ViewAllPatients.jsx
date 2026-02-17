@@ -11,9 +11,7 @@ function ViewAllPatients() {
   useEffect(() => {
     const fetchAllMyPatients = async () => {
       try {
-        
-        const doctorId = localStorage.getItem("doctorId");
-        const res = await api.get(`/users/${doctorId}/patients`);
+        const res = await api.get(`/users/doctor/me/patients`);
         setPatients(res.data);
       } catch (error) {
         setError("Failed to load patients");
@@ -70,7 +68,7 @@ function ViewAllPatients() {
                   <div className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       {/* Avatar */}
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                           <span className="text-gray-600 font-medium text-sm">
                             {p.username?.charAt(0).toUpperCase()}
@@ -89,7 +87,7 @@ function ViewAllPatients() {
                       </div>
 
                       {/* ID Badge */}
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
                           ID: {p._id.slice(-6)}
                         </span>

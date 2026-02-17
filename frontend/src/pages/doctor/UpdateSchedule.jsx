@@ -78,7 +78,7 @@ function UpdateSchedule({ onSaved }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
           <p className="text-slate-600 font-medium">Loading schedule...</p>
@@ -88,9 +88,9 @@ function UpdateSchedule({ onSaved }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-700 shadow-xl">
+      <div className="bg-linear-to-r from-teal-600 via-cyan-600 to-teal-700 shadow-xl">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-3">
             <Clock className="w-8 h-8 text-white" />
@@ -117,7 +117,7 @@ function UpdateSchedule({ onSaved }) {
 
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-slate-200">
+          <div className="bg-linear-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-slate-200">
             <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-teal-600" />
               Schedule Information
@@ -190,7 +190,7 @@ function UpdateSchedule({ onSaved }) {
             {err && (
               <div className="bg-rose-50 border border-rose-200 rounded-lg p-4">
                 <div className="flex gap-3">
-                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                   <p className="text-sm text-rose-700 font-medium">{err}</p>
                 </div>
               </div>
@@ -201,7 +201,7 @@ function UpdateSchedule({ onSaved }) {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? (
                   <>
@@ -231,7 +231,7 @@ function UpdateSchedule({ onSaved }) {
         {/* Info Card */}
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
           <div className="flex gap-3">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-4 h-4 text-blue-600" />
               </div>
