@@ -44,7 +44,7 @@ function StaffLogin() {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-b from-gray-50 to-white py-12">
+    <div className="min-h-[80vh] flex items-center justify-center bg-linear-to-b from-gray-50 to-white py-12">
       <div className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-lg p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-blue-50">
@@ -182,7 +182,7 @@ function StaffLogin() {
               className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"
             >
               <svg
-                className="w-5 h-5 flex-shrink-0 mt-0.5"
+                className="w-5 h-5 shrink-0 mt-0.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

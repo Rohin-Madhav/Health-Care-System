@@ -86,6 +86,10 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
   "http://localhost:5173",
   "https://health-care-system-1-yzp8.onrender.com",
+  // Add deployed frontend domain used by Render
+  "https://health-care-system-i7xu.onrender.com",
+  // Allow additional origins via env (comma-separated)
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",").map(s => s.trim()) : []),
 ];
 
 app.use(

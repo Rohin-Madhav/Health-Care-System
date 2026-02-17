@@ -56,7 +56,13 @@ router.get(
   authorizeRoles("admin", "doctor", "patient"),
   userControllers.getPatientById
 );
-router.get("/users/doctor/me", userAuth, authorizeRoles("doctor"), userControllers.getDoctorMe);
+router.get(
+  "/doctor/me",
+  userAuth,
+  authorizeRoles("doctor"),
+  userControllers.getDoctorMe
+);
+
 router.get(
   "/doctor/:doctorId",
   userAuth,

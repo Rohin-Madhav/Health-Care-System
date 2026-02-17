@@ -117,7 +117,7 @@ function Contact() {
               <h2 className="text-2xl font-bold mb-6 text-gray-800">Contact Information</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
+                  <div className="shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
                     <MapPin className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
@@ -126,7 +126,7 @@ function Contact() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
+                  <div className="shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
                     <Mail className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
@@ -135,7 +135,7 @@ function Contact() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
+                  <div className="shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
                     <Phone className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>

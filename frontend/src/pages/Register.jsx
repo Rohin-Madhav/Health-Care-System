@@ -80,7 +80,7 @@ export default function Register() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="max-w-4xl w-full bg-white rounded-xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
         {/* Illustration / branding */}
-        <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-b from-blue-600 to-indigo-600 text-white p-10">
+        <div className="hidden md:flex flex-col items-center justify-center bg-linear-to-b from-blue-600 to-indigo-600 text-white p-10">
           <svg width="64" height="64" viewBox="0 0 24 24" className="mb-4">
             <path
               fill="currentColor"

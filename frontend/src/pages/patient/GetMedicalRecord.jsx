@@ -64,7 +64,7 @@ function GetMedicalRecord({ userId }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
           <p className="text-slate-600 font-medium">
@@ -77,7 +77,7 @@ function GetMedicalRecord({ userId }) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
           <XCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
           <p className="text-rose-600 text-center font-medium">{error}</p>
@@ -87,7 +87,7 @@ function GetMedicalRecord({ userId }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">

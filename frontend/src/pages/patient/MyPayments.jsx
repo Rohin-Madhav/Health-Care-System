@@ -25,7 +25,7 @@ function MyPayments() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex justify-center items-center">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 flex justify-center items-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
           <p className="mt-4 text-gray-600 font-medium">Loading payments...</p>
@@ -36,7 +36,7 @@ function MyPayments() {
 
   if (payments.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex justify-center items-center">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 flex justify-center items-center">
         <div className="text-center bg-white p-12 rounded-3xl shadow-xl">
           <div className="text-6xl mb-4">💳</div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -62,7 +62,7 @@ function MyPayments() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -80,7 +80,7 @@ function MyPayments() {
               className="group bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
             >
               {/* Card Header with Gradient */}
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+              <div className="bg-linear-to-r from-blue-500 to-purple-600 p-6 text-white">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h3 className="text-xl font-bold mb-1">

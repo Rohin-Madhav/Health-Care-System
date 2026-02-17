@@ -54,7 +54,7 @@ function PatientLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-6">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-white p-6">
       <div className="w-full max-w-md bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
         <div className="p-8">
           <div className="flex items-center gap-4 mb-6">
@@ -171,7 +171,7 @@ function PatientLogin() {
               <div className="flex items-start gap-3 p-3 text-sm text-red-700 bg-red-50 border border-red-100 rounded-md">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5 mt-0.5 flex-shrink-0"
+                  className="w-5 h-5 mt-0.5 shrink-0"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -203,7 +203,7 @@ function PatientLogin() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300 transition"
+              className="w-full py-3 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300 transition"
             >
               Sign in
             </button>

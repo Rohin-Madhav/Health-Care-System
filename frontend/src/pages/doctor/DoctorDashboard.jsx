@@ -15,7 +15,7 @@ import {
 import api from "../../services/Api";
 
 export default function DoctorDashboard() {
-  const [doctorData, setDoctorData] = useState("");
+  const [doctorData, setDoctorData] = useState({});
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [schedules, setSchedules] = useState([]);
@@ -26,23 +26,29 @@ export default function DoctorDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        let doctorRes;
+        try {
+          doctorRes = await api.get("/users/doctor/me");
+        } catch (doctorErr) {
+          if (doctorErr?.response?.status === 400) {
+            doctorRes = await api.get("/users/users/doctor/me");
+          } else {
+            throw doctorErr;
+          }
+        }
+        setDoctorData(doctorRes.data || {});
 
-        const doctorRes = await api.get("/users/doctor/me");
-        setDoctorData(doctorRes.data);
-
-        const [userRes, aptRes, patientsRes, scheRes] = await Promise.all([
+        const [aptRes, patientsRes, scheRes] = await Promise.all([
           api.get("/users/appointments"),
           api.get("/users/doctor/me/patients"),
           api.get(`/users/doctorSchedules`),
         ]);
-
-
         setAppointments(aptRes.data.appointments || []);
         setPatients(patientsRes.data);
         setSchedules(scheRes.data || []);
       } catch (error) {
-        console.error(error);
-        setError("Error fetching Doctors");
+        console.error("Doctor dashboard fetch error:", error);
+        setError(error?.response?.data?.message || "Error fetching Doctors");
       } finally {
         setLoading(false);
       }
@@ -133,7 +139,7 @@ export default function DoctorDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
           <p className="text-slate-600 font-medium">Loading dashboard...</p>
@@ -144,7 +150,7 @@ export default function DoctorDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50 flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-lg p-8 max-w-md">
           <XCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
           <p className="text-rose-600 text-center font-medium">{error}</p>
@@ -154,9 +160,9 @@ export default function DoctorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-teal-50 to-cyan-50">
       {/* Header with Gradient */}
-      <div className="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-700 shadow-xl">
+      <div className="bg-linear-to-r from-teal-600 via-cyan-600 to-teal-700 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between">
             <div>
@@ -213,7 +219,7 @@ export default function DoctorDashboard() {
                 <button
                   key={index}
                   onClick={() => navigate(action.path)}
-                  className={`relative overflow-hidden bg-gradient-to-br ${action.gradient} text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group`}
+                  className={`relative overflow-hidden bg-linear-to-br ${action.gradient} text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group`}
                 >
                   <div className="relative z-10">
                     <Icon className="w-10 h-10 mb-3 mx-auto group-hover:scale-110 transition-transform" />
@@ -238,7 +244,7 @@ export default function DoctorDashboard() {
           {/* Appointments Section */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
             <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
+              <div className="bg-linear-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
                 <Calendar className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -255,7 +261,7 @@ export default function DoctorDashboard() {
                 appointments.map((a) => (
                   <div
                     key={a._id}
-                    className="border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-teal-300 transition-all duration-200 bg-gradient-to-r from-white to-slate-50"
+                    className="border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-teal-300 transition-all duration-200 bg-linear-to-r from-white to-slate-50"
                   >
                     <div className="flex justify-between items-start mb-3">
                       <h3 className="font-bold text-slate-800 text-lg">
@@ -299,7 +305,7 @@ export default function DoctorDashboard() {
           {/* Schedule Section */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
             <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-              <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-2 rounded-lg">
+              <div className="bg-linear-to-br from-amber-500 to-orange-600 p-2 rounded-lg">
                 <Clock className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -314,7 +320,7 @@ export default function DoctorDashboard() {
                 schedules.map((s) => (
                   <div
                     key={s._id}
-                    className="border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-amber-300 transition-all duration-200 bg-gradient-to-r from-white to-amber-50"
+                    className="border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-amber-300 transition-all duration-200 bg-linear-to-r from-white to-amber-50"
                   >
                     <div className="flex justify-between items-center mb-3">
                       <span className="text-sm font-bold text-slate-800">
@@ -358,7 +364,7 @@ export default function DoctorDashboard() {
         {/* Patients Section */}
         <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
           <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-            <div className="bg-gradient-to-br from-teal-500 to-cyan-600 p-2 rounded-lg">
+            <div className="bg-linear-to-br from-teal-500 to-cyan-600 p-2 rounded-lg">
               <Users className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -373,10 +379,10 @@ export default function DoctorDashboard() {
               patients.map((patient) => (
                 <div
                   key={patient._id}
-                  className="border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-teal-300 transition-all duration-200 bg-gradient-to-br from-white to-teal-50 group cursor-pointer"
+                  className="border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-teal-300 transition-all duration-200 bg-linear-to-br from-white to-teal-50 group cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-linear-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                       <span className="text-white font-bold text-lg">
                         {patient.username?.charAt(0).toUpperCase()}
                       </span>
