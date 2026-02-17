@@ -76,7 +76,7 @@ router.patch(
   userControllers.updateDoctor
 );
 router.get(
-  "/doctor/me/patients",
+  "/doctor/:doctorId/patients",
   userAuth,
   authorizeRoles("doctor"),
   userControllers.getPatientsByDoctor
